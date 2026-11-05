@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tourify - Jelajahi Taman Hiburan</title>
+  <meta name="description" content="Temukan taman hiburan dan kenali wahananya bersama Tourify. Jelajahi destinasi dan aplikasi Tourify untuk Android.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="app-page home-page">
+  <div class="site-shell">
+    <nav class="navbar">
+      <div class="container nav-content">
+        <a href="index.html" class="logo" aria-label="Tourify - Beranda">
+          <img src="assets/tourify-logo.png" alt="Tourify">
+        </a>
+
+        <div class="nav-links">
+          <a href="index.html" class="active">Beranda</a>
+          <a href="destinasi.html">Wahana</a>
+          <a href="#aplikasi">Aplikasi Android</a>
+          <a href="admin.html">Admin</a>
+        </div>
+
+        <form class="nav-search" id="headerSearchForm" role="search">
+          <input type="search" id="headerSearch" placeholder="Cari taman atau kota" aria-label="Cari taman atau kota">
+          <button type="submit" aria-label="Cari">⌕</button>
+        </form>
+      </div>
+    </nav>
+
+    <main>
+      <section class="showcase-hero">
+        <img class="showcase-image" src="assets/coast-hero.png" alt="Pesisir hijau dan laut biru">
+        <div class="showcase-shade"></div>
+        <div class="showcase-content">
+          <p class="showcase-eyebrow">Hari seru menantimu.</p>
+          <h1>JELAJAH</h1>
+          <p class="showcase-copy">Kenali taman hiburan dan temukan wahana seru untuk petualangan berikutnya. Jelajahi inspirasinya di sini, lalu lanjutkan pengalamanmu lewat aplikasi Tourify di Android.</p>
+          <div class="showcase-actions">
+            <a href="destinasi.html" class="hero-button hero-button-light">Cari wahana</a>
+            <a href="#aplikasi" class="hero-button hero-button-outline">Kenali aplikasinya</a>
+          </div>
+        </div>
+        <div class="hero-destinations" id="populer">
+          <div class="destination-carousel">
+            <div class="destination-grid" id="popularList"></div>
+          </div>
+          <a class="hero-see-all" href="destinasi.html">Lihat semua wahana <span aria-hidden="true">→</span></a>
+        </div>
+      </section>
+
+      <section class="experience-section container">
+        <article class="experience-intro">
+          <p class="eyebrow">PILIH KESERUANMU</p>
+          <h2>Wahana untuk setiap suasana.</h2>
+          <p>Mau bermain air atau mencoba permainan yang menantang? Mulai dari taman yang kamu suka.</p>
+          <a href="destinasi.html" class="panel-button">Jelajahi wahana <span aria-hidden="true">→</span></a>
+        </article>
+        <a href="detail.html?id=ocean" class="experience-card">
+          <img src="https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=900&q=80" alt="Wahana air">
+          <div><span>Wahana air</span><h3>Hari yang penuh cipratan</h3><p>Lihat Ocean Park →</p></div>
+        </a>
+        <a href="detail.html?id=dufan" class="experience-card">
+          <img src="https://images.unsplash.com/photo-1513889961551-628c1e5e2ee9?auto=format&fit=crop&w=900&q=80" alt="Wahana taman hiburan">
+          <div><span>Taman bermain</span><h3>Permainan untuk semua</h3><p>Lihat Dufan →</p></div>
+        </a>
+      </section>
+
+      <section class="steps-section container" id="aplikasi">
+        <p class="eyebrow">TOURIFY DI ANDROID</p>
+        <h2>Jelajahi lebih jauh lewat aplikasi.</h2>
+        <div class="steps-grid">
+          <div><span>01</span><h3>Temukan inspirasi</h3><p>Lihat pilihan taman hiburan dan suasana yang ingin kamu coba.</p></div>
+          <div><span>02</span><h3>Kenali wahananya</h3><p>Jelajahi informasi setiap taman sebelum menentukan tujuan.</p></div>
+          <div><span>03</span><h3>Lanjutkan di Android</h3><p>Gunakan aplikasi Tourify untuk pengalaman lengkap saat merencanakan kunjungan.</p></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer container">
+      <span>Tourify · Temukan petualangan serumu</span>
+      <a href="destinasi.html">Jelajahi wahana →</a>
+    </footer>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

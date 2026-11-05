@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Admin - Tourify</title>
+  <meta name="description" content="Kelola pesanan, destinasi, dan aktivitas Tourify dari satu dashboard admin.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="admin-app">
+  <div class="admin-layout">
+    <aside class="admin-sidebar" id="adminSidebar">
+      <a class="admin-brand" href="admin.html" aria-label="Tourify Admin, ringkasan">
+        <img src="assets/tourify-logo.png" alt="Tourify">
+        <span>ADMIN</span>
+      </a>
+
+      <div class="admin-workspace">
+        <span class="admin-workspace-mark">T</span>
+        <span><strong>Tourify Indonesia</strong><small>Panel pengelola</small></span>
+        <span class="admin-workspace-chevron" aria-hidden="true">⌄</span>
+      </div>
+
+      <p class="admin-nav-caption">MENU UTAMA</p>
+      <nav class="admin-nav" aria-label="Menu admin">
+        <button class="admin-nav-link is-active" type="button" data-view="overview">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="4" rx="1.5"/><rect x="13.5" y="9.5" width="7" height="11" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/></svg>
+          <span>Ringkasan</span>
+        </button>
+        <button class="admin-nav-link" type="button" data-view="bookings">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h14a1.5 1.5 0 0 1 1.5 1.5v3a3 3 0 0 0 0 6v3a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 18v-3a3 3 0 0 0 0-6V6A1.5 1.5 0 0 1 5 4.5Z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>
+          <span>Pesanan</span>
+          <span class="admin-nav-count" id="pendingCount">0</span>
+        </button>
+        <button class="admin-nav-link" type="button" data-view="destinations">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5V5.8a1.8 1.8 0 0 1 1.8-1.8H19a1 1 0 0 1 1 1v14.5H4Z"/><path d="M4 19.5a2 2 0 0 0 2 2h14M8 8h8M8 12h5"/><circle cx="16.5" cy="15.5" r="1.5"/></svg>
+          <span>Wahana</span>
+        </button>
+        <button class="admin-nav-link" type="button" data-view="reports">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V11M10 20V4M16 20v-7M22 20H2"/></svg>
+          <span>Laporan</span>
+        </button>
+      </nav>
+
+      <p class="admin-nav-caption admin-nav-caption-secondary">PREFERENSI</p>
+      <nav class="admin-nav" aria-label="Preferensi">
+        <button class="admin-nav-link" type="button" data-view="settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.4 1.1-1.5 2.6-1.7-.7a7.8 7.8 0 0 1-1.6.9l-.3 1.9h-3l-.3-1.9a7.8 7.8 0 0 1-1.6-.9l-1.7.7-1.5-2.6 1.4-1.1a7.8 7.8 0 0 1 0-1.9l-1.4-1.2 1.5-2.5 1.7.7a7.8 7.8 0 0 1 1.6-.9l.3-1.9h3l.3 1.9a7.8 7.8 0 0 1 1.6.9l1.7-.7 1.5 2.5-1.4 1.2a7.8 7.8 0 0 1-.1 1.8Z"/></svg>
+          <span>Pengaturan</span>
+        </button>
+      </nav>
+
+      <div class="admin-sidebar-spacer"></div>
+      <a class="admin-preview-link" href="index.html" target="_blank" rel="noreferrer">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5"/></svg>
+        <span>Lihat situs</span><span aria-hidden="true">↗</span>
+      </a>
+      <div class="admin-sidebar-foot"><span class="admin-live-dot"></span> Sistem beroperasi</div>
+    </aside>
+
+    <button class="admin-sidebar-backdrop" id="sidebarBackdrop" type="button" aria-label="Tutup menu"></button>
+
+    <div class="admin-main">
+      <header class="admin-topbar">
+        <button class="admin-menu-toggle" id="menuToggle" type="button" aria-label="Buka menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div class="admin-breadcrumb"><span>Tourify</span><span aria-hidden="true">/</span><strong id="currentViewLabel">Ringkasan</strong></div>
+        <div class="admin-topbar-actions">
+          <label class="admin-global-search">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m15.5 15.5 4 4"/></svg>
+            <input id="adminSearch" type="search" placeholder="Cari pesanan atau wahana" aria-label="Cari di halaman">
+            <kbd>⌘ K</kbd>
+          </label>
+          <button class="admin-icon-button admin-notification-button" type="button" aria-label="Notifikasi">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><i></i>
+          </button>
+          <button class="admin-profile-button" type="button" data-view="settings">
+            <span class="admin-avatar" id="topbarAvatar">A</span><span><strong id="topbarName">Admin Tourify</strong><small>Administrator</small></span><span class="admin-profile-chevron">⌄</span>
+          </button>
+        </div>
+      </header>
+
+      <main class="admin-content">
+        <section class="admin-view is-visible" id="view-overview" data-view-panel="overview">
+          <div class="admin-page-heading">
+            <div><p class="admin-overline" id="currentDate">PANEL ADMIN</p><h1>Selamat datang, <span id="welcomeName">Admin</span> <span aria-hidden="true">✦</span></h1><p class="admin-subtitle">Berikut ringkasan aktivitas Tourify hari ini.</p></div>
+            <div class="admin-heading-actions"><span class="admin-demo-pill"><span></span> Data demonstrasi</span><button class="admin-button admin-button-primary" type="button" data-open-destination>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> Tambah wahana
+            </button></div>
+          </div>
+
+          <div class="admin-stat-grid">
+            <article class="admin-stat-card"><div class="admin-stat-top"><span>Total pendapatan</span><span class="admin-stat-icon is-green"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M17 7.5c0-1.7-2-3-5-3s-5 1.2-5 3 1.6 2.6 5 3.3 5 1.6 5 3.4-2 3.3-5 3.3-5-1.4-5-3.2"/></svg></span></div><strong class="admin-stat-value" id="revenueValue">Rp0</strong><div class="admin-stat-foot"><span class="admin-trend-up">↗ 12,8%</span><span>dari bulan lalu</span></div></article>
+            <article class="admin-stat-card"><div class="admin-stat-top"><span>Total pesanan</span><span class="admin-stat-icon is-blue"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h14a1.5 1.5 0 0 1 1.5 1.5v3a3 3 0 0 0 0 6v3a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 18v-3a3 3 0 0 0 0-6V6A1.5 1.5 0 0 1 5 4.5Z"/><path d="M9 8h6M9 12h6"/></svg></span></div><strong class="admin-stat-value" id="bookingValue">0</strong><div class="admin-stat-foot"><span class="admin-trend-up">↗ 8,2%</span><span>dari bulan lalu</span></div></article>
+            <article class="admin-stat-card"><div class="admin-stat-top"><span>Tiket terjual</span><span class="admin-stat-icon is-orange"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v2a2.5 2.5 0 0 0 0 5v2a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5v-2a2.5 2.5 0 0 0 0-5z"/><path d="M12 8v1M12 11v1M12 14v1"/></svg></span></div><strong class="admin-stat-value">1.260</strong><div class="admin-stat-foot"><span class="admin-trend-up">↗ 5,4%</span><span>dari bulan lalu</span></div></article>
+            <article class="admin-stat-card"><div class="admin-stat-top"><span>Wahana aktif</span><span class="admin-stat-icon is-purple"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5V5.8A1.8 1.8 0 0 1 5.8 4H19a1 1 0 0 1 1 1v14.5H4Z"/><path d="M4 19.5a2 2 0 0 0 2 2h14M8 8h8M8 12h5"/></svg></span></div><strong class="admin-stat-value" id="activeDestinationValue">0</strong><div class="admin-stat-foot"><span class="admin-neutral-pill">Semua lokasi</span><span>di katalog</span></div></article>
+          </div>
+
+          <div class="admin-overview-grid">
+            <section class="admin-panel admin-revenue-panel">
+              <div class="admin-panel-heading"><div><h2>Ringkasan pendapatan</h2><p>Performa penjualan tiket selama 7 hari terakhir</p></div><span class="admin-select-button">7 hari terakhir</span></div>
+              <div class="admin-chart-summary"><strong>Rp34.700.000</strong><span class="admin-trend-up">↗ 14,6%</span><small>vs. minggu sebelumnya</small></div>
+              <div class="admin-chart" aria-label="Grafik pendapatan mingguan" role="img">
+                <div class="admin-chart-y"><span>Rp8 jt</span><span>Rp6 jt</span><span>Rp4 jt</span><span>Rp2 jt</span><span>Rp0</span></div>
+                <div class="admin-chart-area"><div class="admin-chart-gridlines"><i></i><i></i><i></i><i></i><i></i></div><div class="admin-chart-bars">
+                  <div class="admin-chart-column"><span style="--bar:38%"><i>Rp3,1 jt</i></span><small>Sel</small></div><div class="admin-chart-column"><span style="--bar:56%"><i>Rp4,5 jt</i></span><small>Rab</small></div><div class="admin-chart-column"><span style="--bar:46%"><i>Rp3,8 jt</i></span><small>Kam</small></div><div class="admin-chart-column"><span style="--bar:72%"><i>Rp5,8 jt</i></span><small>Jum</small></div><div class="admin-chart-column"><span style="--bar:61%"><i>Rp4,9 jt</i></span><small>Sab</small></div><div class="admin-chart-column"><span style="--bar:90%"><i>Rp7,2 jt</i></span><small>Min</small></div><div class="admin-chart-column is-today"><span style="--bar:68%"><i>Rp5,4 jt</i></span><small>Sen</small></div>
+                </div></div>
+              </div>
+            </section>
+
+            <section class="admin-panel admin-destination-summary">
+              <div class="admin-panel-heading"><div><h2>Wahana populer</h2><p>Paling banyak dipesan bulan ini</p></div><button class="admin-text-link" type="button" data-view="destinations">Lihat semua →</button></div>
+              <div class="admin-popular-list" id="popularDestinationList"></div>
+            </section>
+          </div>
+
+          <section class="admin-panel admin-table-panel">
+            <div class="admin-panel-heading"><div><h2>Pesanan terbaru</h2><p>Pantau transaksi tiket yang masuk</p></div><button class="admin-button admin-button-secondary" type="button" data-view="bookings">Semua pesanan <span aria-hidden="true">→</span></button></div>
+            <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>ID PESANAN</th><th>PELANGGAN</th><th>DESTINASI</th><th>TANGGAL KUNJUNGAN</th><th>TOTAL</th><th>STATUS</th><th></th></tr></thead><tbody id="recentBookingsBody"></tbody></table></div>
+          </section>
+        </section>
+
+        <section class="admin-view" id="view-bookings" data-view-panel="bookings" hidden>
+          <div class="admin-page-heading"><div><p class="admin-overline">TRANSAKSI</p><h1>Pesanan tiket</h1><p class="admin-subtitle">Kelola dan perbarui status pemesanan pengunjung.</p></div><button class="admin-button admin-button-secondary" type="button" data-export-bookings>Unduh data <span aria-hidden="true">↓</span></button></div>
+          <section class="admin-panel admin-table-panel">
+            <div class="admin-booking-toolbar"><div class="admin-filter-tabs" role="tablist" aria-label="Filter status pesanan"><button class="is-active" type="button" data-booking-filter="Semua">Semua <span id="allBookingCount">0</span></button><button type="button" data-booking-filter="Menunggu">Menunggu <span id="waitingBookingCount">0</span></button><button type="button" data-booking-filter="Terkonfirmasi">Terkonfirmasi</button><button type="button" data-booking-filter="Selesai">Selesai</button></div><label class="admin-table-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m15.5 15.5 4 4"/></svg><input id="bookingSearch" type="search" placeholder="Cari pesanan..."></label></div>
+            <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>ID PESANAN</th><th>PELANGGAN</th><th>DESTINASI</th><th>TANGGAL KUNJUNGAN</th><th>TIKET</th><th>TOTAL</th><th>STATUS</th><th>AKSI</th></tr></thead><tbody id="bookingsBody"></tbody></table></div>
+            <div class="admin-table-footer"><span id="bookingResultsLabel">Menampilkan pesanan</span><div><button type="button" disabled aria-label="Halaman sebelumnya">←</button><button type="button" class="is-current" aria-label="Halaman 1">1</button><button type="button" disabled aria-label="Halaman berikutnya">→</button></div></div>
+          </section>
+        </section>
+
+        <section class="admin-view" id="view-destinations" data-view-panel="destinations" hidden>
+          <div class="admin-page-heading"><div><p class="admin-overline">KATALOG</p><h1>Kelola wahana</h1><p class="admin-subtitle">Atur informasi destinasi yang tampil di katalog Tourify.</p></div><button class="admin-button admin-button-primary" type="button" data-open-destination><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> Tambah wahana</button></div>
+          <section class="admin-panel admin-table-panel">
+            <div class="admin-panel-heading admin-destination-toolbar"><div><h2>Semua destinasi</h2><p id="destinationCountLabel">0 destinasi terdaftar</p></div><label class="admin-table-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m15.5 15.5 4 4"/></svg><input id="destinationSearch" type="search" placeholder="Cari wahana atau kota"></label></div>
+            <div class="admin-table-wrap"><table class="admin-table admin-destination-table"><thead><tr><th>DESTINASI</th><th>LOKASI</th><th>HARGA MULAI</th><th>PESANAN BULAN INI</th><th>STATUS</th><th></th></tr></thead><tbody id="destinationsBody"></tbody></table></div>
+          </section>
+        </section>
+
+        <section class="admin-view" id="view-reports" data-view-panel="reports" hidden>
+          <div class="admin-page-heading"><div><p class="admin-overline">ANALITIK</p><h1>Laporan penjualan</h1><p class="admin-subtitle">Lihat tren transaksi dan destinasi yang diminati.</p></div><button class="admin-button admin-button-secondary" type="button" data-export-bookings>Unduh laporan <span aria-hidden="true">↓</span></button></div>
+          <div class="admin-stat-grid admin-report-stats"><article class="admin-stat-card"><div class="admin-stat-top"><span>Pendapatan bulan ini</span><span class="admin-stat-icon is-green">Rp</span></div><strong class="admin-stat-value">Rp58.450.000</strong><div class="admin-stat-foot"><span class="admin-trend-up">↗ 12,8%</span><span>vs bulan lalu</span></div></article><article class="admin-stat-card"><div class="admin-stat-top"><span>Pesanan bulan ini</span><span class="admin-stat-icon is-blue">#</span></div><strong class="admin-stat-value" id="reportBookingValue">0</strong><div class="admin-stat-foot"><span class="admin-trend-up">↗ 8,2%</span><span>vs bulan lalu</span></div></article><article class="admin-stat-card"><div class="admin-stat-top"><span>Rata-rata transaksi</span><span class="admin-stat-icon is-orange">↗</span></div><strong class="admin-stat-value">Rp235.685</strong><div class="admin-stat-foot"><span class="admin-neutral-pill">Per pesanan</span></div></article><article class="admin-stat-card"><div class="admin-stat-top"><span>Tiket terjual</span><span class="admin-stat-icon is-purple">T</span></div><strong class="admin-stat-value">1.260</strong><div class="admin-stat-foot"><span class="admin-trend-up">↗ 5,4%</span><span>vs bulan lalu</span></div></article></div>
+          <section class="admin-panel admin-report-chart"><div class="admin-panel-heading"><div><h2>Tren pendapatan</h2><p>Perkiraan pendapatan harian selama satu minggu</p></div><span class="admin-chart-legend"><i></i> Pendapatan</span></div><div class="admin-chart admin-chart-large" role="img" aria-label="Grafik tren pendapatan mingguan"><div class="admin-chart-y"><span>Rp8 jt</span><span>Rp6 jt</span><span>Rp4 jt</span><span>Rp2 jt</span><span>Rp0</span></div><div class="admin-chart-area"><div class="admin-chart-gridlines"><i></i><i></i><i></i><i></i><i></i></div><div class="admin-chart-bars"><div class="admin-chart-column"><span style="--bar:38%"></span><small>Sel</small></div><div class="admin-chart-column"><span style="--bar:56%"></span><small>Rab</small></div><div class="admin-chart-column"><span style="--bar:46%"></span><small>Kam</small></div><div class="admin-chart-column"><span style="--bar:72%"></span><small>Jum</small></div><div class="admin-chart-column"><span style="--bar:61%"></span><small>Sab</small></div><div class="admin-chart-column"><span style="--bar:90%"></span><small>Min</small></div><div class="admin-chart-column is-today"><span style="--bar:68%"></span><small>Sen</small></div></div></div></div></section>
+        </section>
+
+        <section class="admin-view" id="view-settings" data-view-panel="settings" hidden>
+          <div class="admin-page-heading"><div><p class="admin-overline">PREFERENSI</p><h1>Pengaturan akun</h1><p class="admin-subtitle">Perbarui informasi profil admin yang ditampilkan di panel ini.</p></div></div>
+          <div class="admin-settings-grid"><form class="admin-panel admin-settings-panel" id="profileForm"><div class="admin-panel-heading"><div><h2>Profil administrator</h2><p>Informasi dasar akun pengelola.</p></div></div><label class="admin-form-field">Nama lengkap<input id="profileName" name="name" type="text" value="Admin Tourify" required maxlength="50"></label><label class="admin-form-field">Alamat email<input id="profileEmail" name="email" type="email" value="admin@tourify.id" required></label><div class="admin-settings-footer"><span id="profileSaveMessage" aria-live="polite"></span><button class="admin-button admin-button-primary" type="submit">Simpan perubahan</button></div></form><section class="admin-panel admin-settings-panel"><div class="admin-panel-heading"><div><h2>Preferensi notifikasi</h2><p>Atur pemberitahuan di dashboard.</p></div></div><label class="admin-toggle-row"><span><strong>Pesanan baru</strong><small>Tampilkan notifikasi saat pesanan masuk.</small></span><input type="checkbox" id="newBookingNotifications" checked><i></i></label><label class="admin-toggle-row"><span><strong>Ringkasan mingguan</strong><small>Pengingat untuk memeriksa performa mingguan.</small></span><input type="checkbox" id="weeklySummaryNotifications" checked><i></i></label></section></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <dialog class="admin-dialog" id="destinationDialog">
+    <form id="destinationForm" method="dialog">
+      <div class="admin-dialog-heading"><div><p class="admin-overline">KATALOG TOURIFY</p><h2 id="destinationDialogTitle">Tambah wahana</h2><p>Masukkan informasi dasar destinasi baru.</p></div><button class="admin-dialog-close" type="button" data-close-dialog aria-label="Tutup">×</button></div>
+      <input type="hidden" id="destinationId">
+      <label class="admin-form-field">Nama wahana<input id="destinationName" type="text" required maxlength="60" placeholder="Contoh: Ocean Park"></label>
+      <label class="admin-form-field">Kota / lokasi<input id="destinationCity" type="text" required maxlength="60" placeholder="Contoh: Jakarta Selatan"></label>
+      <label class="admin-form-field">Harga tiket mulai<input id="destinationPrice" type="number" required min="0" step="1000" placeholder="150000"></label>
+      <div class="admin-dialog-actions"><button class="admin-button admin-button-secondary" type="button" data-close-dialog>Batal</button><button class="admin-button admin-button-primary" type="submit">Simpan wahana</button></div>
+    </form>
+  </dialog>
+
+  <div class="admin-toast" id="adminToast" role="status" aria-live="polite"></div>
+  <script src="admin.js"></script>
+</body>
+</html>
