@@ -1,0 +1,171 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String    @id
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+  tasks         Task[]
+  bookings      Booking[]
+  destinations  Destination[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?   @db.Text
+  refreshToken          String?   @db.Text
+  idToken               String?   @db.Text
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?   @db.Text
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@unique([providerId, accountId])
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String   @db.Text
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model RateLimit {
+  id          String @id @default(cuid())
+  key         String @unique
+  count       Int
+  lastRequest BigInt
+
+  @@map("rateLimit")
+}
+
+model Task {
+  id          String       @id @default(cuid())
+  userId      String
+  title       String       @db.VarChar(160)
+  description String       @default("") @db.Text
+  project     String       @default("My workspace") @db.VarChar(80)
+  category    String       @default("Personal") @db.VarChar(40)
+  priority    TaskPriority @default(MEDIUM)
+  status      TaskStatus   @default(TODO)
+  dueDate     DateTime?    @db.Timestamptz(3)
+  checklist   Json         @default("[]")
+  accent      String       @default("coral") @db.VarChar(20)
+  completedAt DateTime?    @db.Timestamptz(3)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status, dueDate])
+  @@index([userId, createdAt])
+  @@map("task")
+}
+
+model Booking {
+  id              String        @id @default(cuid())
+  code            String        @unique @db.VarChar(32)
+  ownerId         String
+  customerName    String        @db.VarChar(100)
+  customerEmail   String        @db.VarChar(254)
+  customerPhone   String?       @db.VarChar(30)
+  destinationSlug String        @db.VarChar(48)
+  destinationName String        @db.VarChar(100)
+  visitDate       DateTime      @db.Timestamptz(3)
+  ticketCount     Int
+  totalAmount     Int
+  status          BookingStatus @default(PENDING)
+  paymentStatus   PaymentStatus @default(UNPAID)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  owner           User          @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId, status, createdAt])
+  @@index([ownerId, visitDate])
+  @@map("booking")
+}
+
+model Destination {
+  id          String   @id @default(cuid())
+  slug        String   @db.VarChar(48)
+  ownerId     String
+  name        String   @db.VarChar(100)
+  area        String   @db.VarChar(100)
+  category    String   @db.VarChar(60)
+  description String   @default("") @db.VarChar(500)
+  price       Int
+  image       String   @default("/tourify-coast-hero.png") @db.VarChar(500)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@unique([ownerId, slug])
+  @@index([ownerId, createdAt])
+  @@map("destination")
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  REFUNDED
+}
