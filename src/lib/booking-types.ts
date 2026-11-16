@@ -55,6 +55,7 @@ export const tourifyDestinations: TourifyDestination[] = [
     price: 100000,
     image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=1000&q=82",
     category: "Wahana air",
+    description: "Rasakan suasana pantai tropis dan ombak yang datang bergantian. Kolam Ombak cocok buat seru-seruan bareng keluarga atau teman tanpa harus jauh dari area taman.",
   },
   {
     slug: "komidi-putar",
@@ -63,6 +64,7 @@ export const tourifyDestinations: TourifyDestination[] = [
     price: 150000,
     image: "https://images.unsplash.com/photo-1513889961551-628c1e5e2ee9?auto=format&fit=crop&w=1000&q=82",
     category: "Wahana keluarga",
+    description: "Naik komidi putar dengan lampu dan musik yang meriah. Wahana santai ini pas untuk pengunjung kecil maupun keluarga yang ingin menikmati suasana taman bersama.",
   },
   {
     slug: "seluncur-air",
@@ -71,6 +73,7 @@ export const tourifyDestinations: TourifyDestination[] = [
     price: 125000,
     image: "https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&w=1000&q=82",
     category: "Wahana air",
+    description: "Meluncur melewati lintasan air dan mendarat dengan cipratan yang menyegarkan. Seluncur Air jadi pilihan buat kamu yang ingin aktivitas lebih menantang di Zona Air.",
   },
   {
     slug: "taman-rekreasi",
@@ -79,6 +82,7 @@ export const tourifyDestinations: TourifyDestination[] = [
     price: 180000,
     image: "/tourify-coast-hero.png",
     category: "Area santai",
+    description: "Beristirahat sejenak sambil menikmati pemandangan dan suasana terbuka. Taman Rekreasi memberi ruang untuk berjalan santai, berkumpul, atau sekadar menikmati waktu bersama.",
   },
 ];
 

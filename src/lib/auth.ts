@@ -13,7 +13,7 @@ export const auth = betterAuth({
   appName: "Tourify",
   baseURL: process.env.BETTER_AUTH_URL ?? "http://localhost:3000",
   secret,
-  database: prismaAdapter(prisma, { provider: "postgresql" }),
+  database: prismaAdapter(prisma, { provider: "mysql" }),
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 12,

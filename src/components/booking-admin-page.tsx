@@ -52,18 +52,20 @@ export function BookingAdminPage({ view }: { view: View }) {
     }
   }
 
-  return <>
+  return <div className="admin-route-transition" data-view={view} key={view}>
     {workspace.error && <div className="admin-notice" role="status"><span>{workspace.error}</span><button onClick={() => void workspace.refreshBookings()}><RotateCw size={14} /> Muat ulang</button></div>}
-    {view === "dashboard" && <DashboardView onCreate={() => setDialogOpen(true)} />}
-    {view === "bookings" && <BookingsView onCreate={() => setDialogOpen(true)} />}
-    {view === "destinations" && <DestinationsView />}
-    {view === "customers" && <CustomersView />}
-    {view === "reports" && <ReportsView />}
-    {view === "settings" && <SettingsView />}
-    {view === "profile" && <ProfileView />}
+    <div className="admin-route-content">
+      {view === "dashboard" && <DashboardView onCreate={() => setDialogOpen(true)} />}
+      {view === "bookings" && <BookingsView onCreate={() => setDialogOpen(true)} />}
+      {view === "destinations" && <DestinationsView />}
+      {view === "customers" && <CustomersView />}
+      {view === "reports" && <ReportsView />}
+      {view === "settings" && <SettingsView />}
+      {view === "profile" && <ProfileView />}
+    </div>
     {dialogOpen && <BookingDialog onClose={() => setDialogOpen(false)} onCreate={create} />}
     {toast && <div className="admin-toast"><CheckCircle2 size={17} />{toast}</div>}
-  </>;
+  </div>;
 }
 
 function ViewHeading({ eyebrow, title, description, action, actionLabel = "Booking baru", icon: Icon = Ticket }: { eyebrow: string; title: string; description: string; action?: () => void; actionLabel?: string; icon?: typeof Ticket }) {
@@ -88,7 +90,7 @@ function DashboardView({ onCreate }: { onCreate: () => void }) {
   const maximum = Math.max(1, ...weekly.map((item) => item.amount));
   const popular = destinations.map((destination) => ({ ...destination, count: bookings.filter((booking) => booking.destinationSlug === destination.slug).length })).sort((a, b) => b.count - a.count);
 
-  return <>
+  return <div className="admin-dashboard-motion">
     <ViewHeading eyebrow="Ikhtisar operasional" title={`Halo, ${user.name.split(" ")[0]}.`} description="Pantau pemesanan dan wahana di taman Tourify." action={onCreate} />
     <div className="admin-stat-grid">
       <MetricCard label="Total pemesanan" value={idNumber.format(monthBookings.length)} note="Booking bulan ini" icon={Ticket} tint="green" />
@@ -100,8 +102,8 @@ function DashboardView({ onCreate }: { onCreate: () => void }) {
       <section className="admin-panel admin-revenue-panel">
         <div className="admin-panel-heading"><div><span className="eyebrow">Performa</span><h2>Pendapatan booking</h2><p>Transaksi lunas dalam 7 hari terakhir</p></div><span className="admin-period-chip"><CalendarDays size={14} /> 7 hari</span></div>
         <div className="admin-chart-summary"><strong>{idr.format(paidRevenue)}</strong><span className="admin-neutral-trend"><ArrowUpRight size={14} /> Bulan ini</span></div>
-        <div className="admin-bar-chart" aria-label="Grafik pendapatan booking tujuh hari terakhir">
-          {weekly.map((item, index) => <div className="admin-bar-column" key={`${item.day}-${index}`}><span className="admin-bar-tooltip">{item.amount ? idrCompact.format(item.amount) : ""}</span><div className="admin-bar-track"><i className={index === weekly.length - 1 ? "admin-bar-fill is-current" : "admin-bar-fill"} style={{ height: `${item.amount ? Math.max(6, item.amount / maximum * 100) : 3}%` }} /></div><span className="admin-bar-day">{item.day}</span></div>)}
+        <div className={`admin-bar-chart${loading ? "" : " is-ready"}`} aria-label="Grafik pendapatan booking tujuh hari terakhir">
+          {weekly.map((item, index) => <div className="admin-bar-column" key={`${item.day}-${index}`}><span className="admin-bar-tooltip">{item.amount ? idrCompact.format(item.amount) : ""}</span><div className="admin-bar-track"><i className={index === weekly.length - 1 ? "admin-bar-fill is-current" : "admin-bar-fill"} style={{ height: `${item.amount ? Math.max(6, item.amount / maximum * 100) : 3}%`, animationDelay: `${0.72 + index * 0.09}s` }} /></div><span className="admin-bar-day">{item.day}</span></div>)}
         </div>
       </section>
       <section className="admin-panel admin-status-panel">
@@ -124,7 +126,7 @@ function DashboardView({ onCreate }: { onCreate: () => void }) {
         <Link href="/destinations" className="admin-destination-link">Kelola wahana <ArrowRight size={15} /></Link>
       </section>
     </div>
-  </>;
+  </div>;
 }
 
 function MetricCard({ label, value, note, icon: Icon, tint }: { label: string; value: string; note: string; icon: typeof Ticket; tint: string }) {
@@ -296,7 +298,7 @@ function SettingsView() {
   return <>
     <ViewHeading eyebrow="Preferensi akun" title="Pengaturan" description="Kelola informasi akun dan keamanan ruang admin." icon={ShieldCheck} />
     <div className="admin-settings-grid"><section className="admin-panel admin-settings-panel"><span className="eyebrow">Profil administrator</span><h2>Informasi akun</h2><p>Perbarui nama yang digunakan pada panel admin Tourify.</p><ProfileForm /><div className="admin-settings-rule" /><div className="admin-setting-row"><span className="admin-setting-icon"><ShieldCheck size={17} /></span><span><strong>Sesi terlindungi</strong><small>Akun dipisahkan berdasarkan pemilik dan login memakai sesi aman.</small></span><CheckCircle2 size={17} className="admin-setting-check" /></div><div className="admin-setting-row"><span className="admin-setting-icon"><Ticket size={17} /></span><span><strong>Data booking pribadi</strong><small>{bookings.length} pemesanan tersimpan untuk akun ini.</small></span><CheckCircle2 size={17} className="admin-setting-check" /></div></section>
-      <section className="admin-security-card"><div className="admin-security-mark"><span><ShieldCheck size={28} /></span><i /><i /></div><span className="eyebrow">Tourify Admin</span><h2>Data pengunjung tetap terjaga.</h2><p>Detail pelanggan dan transaksi tersimpan di PostgreSQL, dengan akses terbatas pada akun pengelola.</p><div className="admin-security-line"><Check size={15} /> Session login yang aman</div><div className="admin-security-line"><Check size={15} /> Booking terpisah per akun admin</div></section></div>
+      <section className="admin-security-card"><div className="admin-security-mark"><span><ShieldCheck size={28} /></span><i /><i /></div><span className="eyebrow">Tourify Admin</span><h2>Data pengunjung tetap terjaga.</h2><p>Detail pelanggan dan transaksi tersimpan di MySQL, dengan akses terbatas pada akun pengelola.</p><div className="admin-security-line"><Check size={15} /> Session login yang aman</div><div className="admin-security-line"><Check size={15} /> Booking terpisah per akun admin</div></section></div>
     <div className="admin-settings-footnote">Ada yang perlu dibantu? Hubungi tim Tourify untuk dukungan akun pengelola.</div>
     <span className="admin-settings-hidden-email" aria-hidden="true">{user.email}</span>
   </>;

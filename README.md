@@ -4,10 +4,10 @@ Tourify is a theme park with many rides and play areas. This Next.js website int
 
 ## Run locally
 
-Requirements: Node.js 24 or a supported Node.js LTS release, npm, and PostgreSQL (local or Docker).
+Requirements: Node.js 24 or a supported Node.js LTS release, npm, and MySQL 8.4 (local or Docker).
 
-1. Copy `.env.example` to `.env` and set a local database password plus a unique `BETTER_AUTH_SECRET`. Keep `.env` private.
-2. Start PostgreSQL. With Docker Compose, run `docker compose up -d db`.
+1. Copy `.env.example` to `.env`, set the MySQL passwords, and add a unique `BETTER_AUTH_SECRET`. Keep `.env` private.
+2. Start MySQL. With Docker Compose, run `docker compose up -d db`.
 3. Install dependencies with `npm install`.
 4. Apply database migrations with `npm run db:deploy`.
 5. Start the site with `npm run dev` and visit `http://localhost:3000`.
@@ -29,7 +29,7 @@ The public website is informational. Ticket ordering is described as an app flow
 
 ## Data and security
 
-- PostgreSQL stores accounts, sessions, bookings, and admin-managed rides.
+- MySQL stores accounts, sessions, bookings, and admin-managed rides.
 - Booking and customer data is scoped to the admin account that created it.
 - The server calculates ticket totals from the ride catalogue.
 - Better Auth handles passwords and sessions; changes validate input and verify request origin.
@@ -40,3 +40,5 @@ For a deployment, configure HTTPS, production database credentials, a unique aut
 ## Previous static site
 
 The earlier static Tourify site is archived in `legacy-tourify/`.
+
+The old PostgreSQL migration files are kept in `prisma/legacy-postgresql-migrations/`. The active migration history under `prisma/migrations/` is for MySQL.

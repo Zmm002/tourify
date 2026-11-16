@@ -74,6 +74,68 @@
 .admin-primary-button { min-height: 40px; border-radius: 9px; background: #31876e; box-shadow: 0 6px 14px rgba(49,135,110,.16); }
 .admin-primary-button:hover { background: #21654f; box-shadow: 0 8px 18px rgba(49,135,110,.2); }
 
+.admin-dashboard-motion { animation: admin-dashboard-zoom-in .9s cubic-bezier(.2,.72,.22,1) both; transform-origin: 50% 0; }
+.admin-dashboard-motion > .admin-view-heading,
+.admin-dashboard-motion > .admin-stat-grid > *,
+.admin-dashboard-motion > .admin-dashboard-grid > *,
+.admin-dashboard-motion > .admin-lower-grid > * { opacity: 0; animation: admin-dashboard-card-in .72s cubic-bezier(.2,.75,.25,1) both; }
+.admin-dashboard-motion > .admin-view-heading { animation-delay: .06s; }
+.admin-dashboard-motion > .admin-stat-grid > :nth-child(1) { animation-delay: .16s; }
+.admin-dashboard-motion > .admin-stat-grid > :nth-child(2) { animation-delay: .25s; }
+.admin-dashboard-motion > .admin-stat-grid > :nth-child(3) { animation-delay: .34s; }
+.admin-dashboard-motion > .admin-dashboard-grid > :nth-child(1) { animation-delay: .43s; }
+.admin-dashboard-motion > .admin-dashboard-grid > :nth-child(2) { animation-delay: .52s; }
+.admin-dashboard-motion > .admin-lower-grid > :nth-child(1) { animation-delay: .61s; }
+.admin-dashboard-motion > .admin-lower-grid > :nth-child(2) { animation-delay: .7s; }
+.admin-bar-chart.is-ready .admin-bar-fill { animation: admin-dashboard-bar-in .55s cubic-bezier(.2,.75,.25,1) both; }
+
+@keyframes admin-dashboard-zoom-in {
+  from { opacity: 0; transform: translateY(13px) scale(1.025); filter: blur(2px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+@keyframes admin-dashboard-card-in {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes admin-dashboard-bar-in {
+  from { transform: scaleY(.08); }
+  to { transform: scaleY(1); }
+}
+
+.admin-route-transition { min-width: 0; }
+.admin-route-content { min-width: 0; }
+.admin-route-transition[data-view="dashboard"] .admin-route-content > * { min-width: 0; }
+.admin-route-transition:not([data-view="dashboard"]) .admin-route-content > * {
+  opacity: 0;
+  animation: admin-dashboard-card-in .72s cubic-bezier(.2,.75,.25,1) both;
+}
+.admin-route-transition:not([data-view="dashboard"]) .admin-route-content > :nth-child(1) { animation-delay: .06s; }
+.admin-route-transition:not([data-view="dashboard"]) .admin-route-content > :nth-child(2) { animation-delay: .17s; }
+.admin-route-transition:not([data-view="dashboard"]) .admin-route-content > :nth-child(3) { animation-delay: .28s; }
+.admin-route-transition:not([data-view="dashboard"]) .admin-route-content > :nth-child(4) { animation-delay: .39s; }
+.admin-route-transition:not([data-view="dashboard"]) .admin-route-content > :nth-child(5) { animation-delay: .5s; }
+
+.admin-route-transition:is([data-view="destinations"], [data-view="customers"], [data-view="reports"]) :is(.admin-destination-grid > *, .admin-customer-summary > *, .admin-stat-grid > *) {
+  opacity: 0;
+  animation: admin-dashboard-card-in .62s cubic-bezier(.2,.75,.25,1) both;
+  animation-delay: .2s;
+}
+.admin-route-transition:is([data-view="destinations"], [data-view="customers"], [data-view="reports"]) :is(.admin-destination-grid > :nth-child(2), .admin-customer-summary > :nth-child(2), .admin-stat-grid > :nth-child(2)) { animation-delay: .28s; }
+.admin-route-transition:is([data-view="destinations"], [data-view="customers"], [data-view="reports"]) :is(.admin-destination-grid > :nth-child(3), .admin-customer-summary > :nth-child(3), .admin-stat-grid > :nth-child(3)) { animation-delay: .36s; }
+.admin-route-transition[data-view="destinations"] .admin-destination-grid > :nth-child(4) { animation-delay: .44s; }
+
+.admin-route-transition:is([data-view="bookings"], [data-view="customers"], [data-view="reports"]) .admin-booking-table tbody tr {
+  opacity: 0;
+  animation: admin-dashboard-card-in .45s cubic-bezier(.2,.75,.25,1) both;
+  animation-delay: .2s;
+}
+
+.admin-route-transition[data-view="reports"] .admin-month-column i {
+  transform-origin: center bottom;
+  animation: admin-dashboard-bar-in .65s cubic-bezier(.2,.75,.25,1) both;
+  animation-delay: .3s;
+}
+
 .admin-stat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 17px; }
 .admin-metric-card { min-height: 123px; padding: 15px 17px; display: flex; flex-direction: column; position: relative; background: #fff; border: 1px solid #e9eeeb; border-radius: 12px; box-shadow: 0 4px 14px rgba(32,58,46,.025); }
 .admin-metric-icon { width: 31px; height: 31px; display: grid; place-items: center; border-radius: 8px; }
@@ -399,5 +461,14 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .admin-route-transition:not([data-view="dashboard"]) .admin-route-content > *,
+  .admin-route-transition :is(.admin-destination-grid > *, .admin-customer-summary > *, .admin-stat-grid > *, .admin-booking-table tbody tr),
+  .admin-route-transition[data-view="reports"] .admin-month-column i,
+  .admin-dashboard-motion,
+  .admin-dashboard-motion > .admin-view-heading,
+  .admin-dashboard-motion > .admin-stat-grid > *,
+  .admin-dashboard-motion > .admin-dashboard-grid > *,
+  .admin-dashboard-motion > .admin-lower-grid > *,
+  .admin-bar-chart.is-ready .admin-bar-fill { animation: none; opacity: 1; transform: none; filter: none; }
   .admin-bar-fill { transition: none; }
 }

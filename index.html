@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tourify - Beranda</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container nav-content">
+      <a href="index.html" class="logo">tourify</a>
+
+      <div class="nav-links">
+        <a href="index.html" class="active">Beranda</a>
+        <a href="destinasi.html">Wahana</a>
+        <a href="ticket.html">Tiket Saya</a>
+      </div>
+
+      <a href="account.html" class="user-box">
+        <span class="avatar" id="navAvatar">?</span>
+        <span id="navName">Pengguna</span>
+      </a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <p class="welcome">Selamat datang kembali, <strong id="welcomeName">Pengguna</strong>!</p>
+
+          <h1>
+            Mau bermain<br>
+            <span>ke mana hari ini?</span>
+          </h1>
+
+          <p class="hero-text">
+            Cari taman hiburan favoritmu, cek wahana yang tersedia,
+            lalu pesan tiket dengan mudah.
+          </p>
+
+          <form class="search-box" id="homeSearchForm">
+            <input
+              type="text"
+              id="homeSearch"
+              placeholder="Cari taman hiburan"
+            >
+            <button class="button">Cari</button>
+          </form>
+        </div>
+
+        <a href="detail.html?id=ocean" class="feature-card">
+          <img
+            src="https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=1000&q=80"
+            alt="Ocean Park"
+          >
+
+          <div class="feature-text">
+            <h2>Ocean Park</h2>
+            <p>Lihat wahana →</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="section popular-section">
+      <div class="container">
+        <div class="section-title">
+          <h2>Taman hiburan populer</h2>
+          <a href="destinasi.html">Lihat semua →</a>
+        </div>
+
+        <div class="park-grid" id="popularList"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

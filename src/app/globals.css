@@ -269,7 +269,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 .toast svg{color:#8de0bd}
 @keyframes toast-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-/* Create-task dialog */
 .modal-backdrop{position:fixed;inset:0;z-index:60;background:rgba(25,31,40,.43);backdrop-filter:blur(5px);display:grid;place-items:center;padding:20px}
 .task-modal{width:min(100%,520px);max-height:min(90vh,800px);overflow:auto;background:white;border-radius:22px;padding:23px;box-shadow:0 24px 80px rgba(19,25,36,.25);animation:modal-in .2s ease-out}
 .task-detail-modal{width:min(100%,470px)}
@@ -292,7 +291,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:5px;padding-top:6px}
 
-/* Login and registration */
 .auth-page{min-height:100vh;background:linear-gradient(145deg,#e9f1ee,#f7faf8 60%,#e4efea);padding:clamp(18px,6vh,70px) clamp(16px,7vw,100px);display:grid;place-items:center}
 .auth-layout{width:min(100%,1420px);min-height:min(86vh,850px);border-radius:38px;background:#fff;overflow:hidden;display:grid;grid-template-columns:1.1fr .9fr;box-shadow:0 22px 65px rgba(39,83,67,.14)}
 .auth-story{background:linear-gradient(135deg,rgba(32,53,65,.73),rgba(32,107,88,.55)),url('/tourify-coast-hero.png') center/cover no-repeat;padding:34px clamp(30px,5vw,74px);color:white;display:flex;flex-direction:column;position:relative;overflow:hidden}
