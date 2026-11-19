@@ -1,3 +1,4 @@
+/* Warna khusus admin supaya satu tema dengan merek Tourify. */
 :root {
   --tourify-green: #31876e;
   --tourify-green-dark: #21654f;
@@ -7,6 +8,7 @@
   --tourify-border: #e6ece9;
 }
 
+/* Bingkai panel admin dan navigasi sisi kiri. */
 .admin-backdrop {
   min-height: 100vh;
   padding: 18px;
@@ -58,6 +60,7 @@
 .admin-sidebar-user .sidebar-user-copy strong { font-size: 11px; }
 .admin-sidebar-user .sidebar-user-copy span { font-size: 9px; }
 
+/* Header panel dan area konten setiap halaman admin. */
 .admin-center { background: #fbfcfb; }
 .admin-topbar { height: 72px; padding: 0 clamp(24px, 3vw, 48px); border-color: #edf0ee; background: rgba(255,255,255,.94); }
 .admin-topbar .topbar-title { font-size: 16px; color: #202c27; }
@@ -74,6 +77,7 @@
 .admin-primary-button { min-height: 40px; border-radius: 9px; background: #31876e; box-shadow: 0 6px 14px rgba(49,135,110,.16); }
 .admin-primary-button:hover { background: #21654f; box-shadow: 0 8px 18px rgba(49,135,110,.2); }
 
+/* Animasi saat dashboard dan isi halaman admin muncul. */
 .admin-dashboard-motion { animation: admin-dashboard-zoom-in .9s cubic-bezier(.2,.72,.22,1) both; transform-origin: 50% 0; }
 .admin-dashboard-motion > .admin-view-heading,
 .admin-dashboard-motion > .admin-stat-grid > *,
@@ -136,6 +140,7 @@
   animation-delay: .3s;
 }
 
+/* Ringkasan angka, grafik, dan daftar transaksi terbaru. */
 .admin-stat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 17px; }
 .admin-metric-card { min-height: 123px; padding: 15px 17px; display: flex; flex-direction: column; position: relative; background: #fff; border: 1px solid #e9eeeb; border-radius: 12px; box-shadow: 0 4px 14px rgba(32,58,46,.025); }
 .admin-metric-icon { width: 31px; height: 31px; display: grid; place-items: center; border-radius: 8px; }
@@ -205,6 +210,7 @@
 .admin-filter-tabs button span { min-width: 16px; padding: 1px 4px; border-radius: 9px; background: #fff; text-align: center; }
 .admin-table-count { color: #98a39c; font-size: 9px; white-space: nowrap; }
 .admin-table-wrap { max-width: 100%; overflow: auto; }
+/* Tabel pemesanan dan elemen status transaksi. */
 .admin-booking-table { width: 100%; border-collapse: collapse; white-space: nowrap; font-size: 9px; }
 .admin-booking-table th { padding: 10px 12px; background: #fafbfa; color: #96a19a; font-size: 8px; font-weight: 700; text-align: left; letter-spacing: .45px; }
 .admin-booking-table th:first-child,.admin-booking-table td:first-child { padding-left: 17px; }
@@ -246,6 +252,7 @@
 .admin-notice button { display: inline-flex; align-items: center; gap: 5px; border: 0; background: none; color: inherit; font-size: 9px; font-weight: 700; }
 .admin-toast { position: fixed; z-index: 60; right: 25px; bottom: 25px; padding: 12px 15px; display: flex; align-items: center; gap: 8px; border: 1px solid #dcebe2; border-radius: 9px; background: #fff; box-shadow: 0 12px 36px rgba(29,68,51,.14); color: #286f55; font-size: 11px; font-weight: 700; }
 
+/* Katalog wahana, pelanggan, dan laporan. */
 .admin-destination-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .admin-destination-card { overflow: hidden; border: 1px solid #e7eeea; border-radius: 12px; background: #fff; }
 .admin-destination-photo { min-height: 220px; padding: 13px; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; background-position: center; background-size: cover; color: #fff; }
@@ -290,6 +297,7 @@
 .admin-text-button { padding: 6px 8px; display: inline-flex; align-items: center; gap: 5px; border: 1px solid #e8eeea; border-radius: 6px; background: #fff; color: #6e7c73; font-size: 9px; font-weight: 700; }
 .admin-text-button:hover { color: #21654f; background: #f4f8f5; }
 
+/* Pengaturan akun dan profil admin. */
 .admin-settings-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(250px, .8fr); gap: 15px; }
 .admin-settings-panel { padding: 20px; }
 .admin-settings-panel h2 { margin: 5px 0; color: #23332a; font: 700 17px 'Manrope', sans-serif; }
@@ -337,6 +345,7 @@
 .admin-profile-stats span { display: flex; flex-direction: column; gap: 2px; color: #9aa69e; font-size: 8px; }
 .admin-profile-stats strong { color: #46564c; font: 700 13px 'Manrope', sans-serif; }
 
+/* Dialog formulir booking dan wahana. */
 .admin-modal-backdrop { position: fixed; z-index: 50; inset: 0; padding: 20px; display: grid; place-items: center; background: rgba(28,45,36,.38); backdrop-filter: blur(4px); }
 .admin-booking-modal { width: min(100%, 600px); max-height: min(90vh, 760px); overflow: auto; padding: 22px; border: 1px solid #e5ece7; border-radius: 15px; background: #fff; box-shadow: 0 25px 80px rgba(19,44,32,.22); }
 .admin-modal-heading { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 18px; }
@@ -355,6 +364,7 @@
 .admin-modal-actions { display: flex; justify-content: flex-end; gap: 8px; padding-top: 2px; }
 .admin-modal-actions .button { min-height: 37px; border-radius: 7px; font-size: 10px; }
 
+/* Penyesuaian layar tablet, ponsel, dan aksesibilitas gerak. */
 @media (max-width: 1120px) {
   .admin-backdrop { padding: 12px; }
   .admin-frame { height: calc(100vh - 24px); min-height: 650px; grid-template-columns: 82px minmax(0, 1fr); border-radius: 20px; }

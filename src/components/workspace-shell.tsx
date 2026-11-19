@@ -39,6 +39,7 @@ import {
   type TourifyDestination,
 } from "@/lib/booking-types";
 
+// Informasi akun yang dipakai oleh sidebar dan header admin.
 export type WorkspaceUser = {
   id: string;
   name: string;
@@ -46,6 +47,7 @@ export type WorkspaceUser = {
   image: string | null;
 };
 
+// Data dan aksi bersama supaya tiap halaman admin memakai sumber yang sama.
 type BookingWorkspaceValue = {
   user: WorkspaceUser;
   bookings: BookingDTO[];
@@ -70,9 +72,11 @@ type BookingWorkspaceValue = {
   updateUser: (name: string) => Promise<boolean>;
 };
 
+// Context menjadi jalur berbagi data antarkomponen di area admin.
 const BookingWorkspaceContext =
   createContext<BookingWorkspaceValue | null>(null);
 
+// Daftar menu panel admin beserta ikon dan URL setiap halaman.
 const menuGroups = [
   {
     title: "Menu utama",
@@ -93,8 +97,10 @@ const menuGroups = [
   },
 ];
 
+// Daftar rata untuk mencari label halaman yang sedang dibuka.
 const menuItems = menuGroups.flatMap((group) => group.items);
 
+// Pilihan filter booking yang muncul dari tombol filter di header.
 const statusOptions: { value: "ALL" | BookingStatus; label: string }[] = [
   { value: "ALL", label: "Semua status" },
   { value: "PENDING", label: "Menunggu" },
@@ -103,6 +109,7 @@ const statusOptions: { value: "ALL" | BookingStatus; label: string }[] = [
   { value: "CANCELLED", label: "Dibatalkan" },
 ];
 
+// Hook ini memberi halaman admin akses ke data dan aksi dari WorkspaceShell.
 export function useWorkspace() {
   const workspace = useContext(BookingWorkspaceContext);
 
@@ -118,6 +125,7 @@ type WorkspaceShellProps = {
   children: ReactNode;
 };
 
+// Kerangka admin: memuat data, menyediakan context, dan menampilkan navigasi.
 export function WorkspaceShell({
   user: initialUser,
   children,
@@ -135,6 +143,7 @@ export function WorkspaceShell({
     useState<"ALL" | BookingStatus>("ALL");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
+  // Ambil ulang booking setelah admin meminta refresh atau ada aksi terkait.
   const refreshBookings = useCallback(async () => {
     try {
       const response = await fetch("/api/bookings", { cache: "no-store" });
@@ -159,6 +168,7 @@ export function WorkspaceShell({
     }
   }, []);
 
+  // Simpan wahana lewat API dan langsung perbarui katalog di layar.
   const createDestination = useCallback(
     async (input: DestinationInput) => {
       setError("");
@@ -190,6 +200,7 @@ export function WorkspaceShell({
     [],
   );
 
+  // Saat panel dibuka, ambil booking dan daftar wahana akun ini dari server.
   useEffect(() => {
     let isMounted = true;
 
@@ -256,6 +267,7 @@ export function WorkspaceShell({
     };
   }, []);
 
+  // Kirim booking baru dan masukkan hasilnya ke daftar tanpa reload halaman.
   const createBooking = useCallback(async (input: BookingInput) => {
     setError("");
 
@@ -284,6 +296,7 @@ export function WorkspaceShell({
     }
   }, []);
 
+  // Simpan perubahan status booking lalu ganti datanya di state lokal.
   const updateBooking = useCallback(
     async (
       id: string,
@@ -330,6 +343,7 @@ export function WorkspaceShell({
     [],
   );
 
+  // Perbarui nama akun admin di server dan sinkronkan header/sidebar.
   const updateUser = useCallback(async (name: string) => {
     setError("");
 
@@ -357,6 +371,7 @@ export function WorkspaceShell({
     }
   }, []);
 
+  // Terapkan filter status supaya halaman membaca booking yang sesuai pilihan.
   const filteredBookings = useMemo(
     () =>
       bookings.filter(
@@ -366,6 +381,7 @@ export function WorkspaceShell({
     [bookings, statusFilter],
   );
 
+  // Memo menjaga nilai context stabil selama data yang dibagikan belum berubah.
   const workspaceValue = useMemo(
     () => ({
       user,
@@ -410,6 +426,7 @@ export function WorkspaceShell({
       .map((part) => part[0]?.toUpperCase())
       .join("") || "T";
 
+  // Akhiri sesi di server lalu kembali ke halaman masuk.
   async function logout() {
     await authClient.signOut();
     router.replace("/login");
@@ -420,6 +437,7 @@ export function WorkspaceShell({
     <BookingWorkspaceContext.Provider value={workspaceValue}>
       <div className="app-backdrop admin-backdrop">
         <div className="workspace-frame admin-frame">
+          {/* Sidebar berisi menu utama, profil, bantuan, dan tombol keluar. */}
           <aside
             className={
               "sidebar admin-sidebar " +
@@ -506,6 +524,7 @@ export function WorkspaceShell({
             </div>
           </aside>
 
+          {/* Area ini memuat judul halaman dan konten rute admin yang aktif. */}
           <section className="workspace-center admin-center">
             <header className="topbar admin-topbar">
               <div className="topbar-heading">

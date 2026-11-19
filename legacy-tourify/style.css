@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
 
+/* Gaya dasar lalu komponen publik; bagian admin panel ada di bawah. */
 * {
   box-sizing: border-box;
 }
@@ -527,6 +528,7 @@ input:focus-visible {
 }
 
 @media (max-width: 800px) {
+  /* Rapikan halaman umum saat dibuka di tablet atau ponsel. */
   .left-side {
     display: none;
   }
@@ -572,6 +574,7 @@ input:focus-visible {
 }
 
 @media (max-width: 500px) {
+  /* Susun navigasi dan kartu menjadi satu kolom di ponsel kecil. */
   .park-grid,
   .ride-grid {
     grid-template-columns: 1fr;
@@ -1172,6 +1175,7 @@ body {
 }
 
 @media (max-width: 1000px) {
+  /* Sembunyikan pencarian header saat ruang layar terbatas. */
   .nav-search {
     display: none;
   }
@@ -1179,6 +1183,7 @@ body {
 }
 
 @media (max-width: 800px) {
+  /* Tata ulang beranda dan detail untuk layar tablet. */
   .auth-container {
     width: calc(100% - 24px);
   }
@@ -1218,6 +1223,7 @@ body {
 }
 
 @media (max-width: 600px) {
+  /* Atur jarak dan lebar komponen publik pada ponsel. */
   .site-shell,
   .auth-container {
     width: 100%;
@@ -1339,6 +1345,7 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* Hormati pengaturan perangkat yang meminta animasi dikurangi. */
   .destination-grid {
     animation: none;
   }
@@ -1352,7 +1359,7 @@ body {
   font-weight: 700;
 }
 
-/* ADMIN PANEL */
+/* Panel dashboard admin dan komponen pengelolaan. */
 .admin-app {
   --admin-ink: #1c2a2f;
   --admin-muted: #839098;
@@ -2773,6 +2780,7 @@ body {
 }
 
 @media (max-width: 1180px) {
+  /* Kurangi lebar dan jarak dashboard untuk laptop kecil. */
   .admin-content { padding-right: 24px; padding-left: 24px; }
   .admin-topbar { padding-right: 24px; padding-left: 24px; }
   .admin-sidebar { width: 225px; }
@@ -2783,6 +2791,7 @@ body {
 }
 
 @media (max-width: 960px) {
+  /* Susun kartu statistik dan ringkasan secara bertahap. */
   .admin-overview-grid { grid-template-columns: 1fr; }
   .admin-destination-summary { min-height: 0; }
   .admin-popular-list { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 18px; }
@@ -2790,6 +2799,7 @@ body {
 }
 
 @media (max-width: 760px) {
+  /* Jadikan sidebar admin sebagai menu geser pada ponsel. */
   .admin-sidebar { width: min(280px, calc(100vw - 52px)); transform: translateX(-105%); }
   .admin-sidebar-open .admin-sidebar { transform: translateX(0); }
   .admin-sidebar-backdrop { position: fixed; z-index: 35; inset: 0; border: 0; background: rgba(23, 38, 43, .36); }
@@ -2816,6 +2826,7 @@ body {
 }
 
 @media (max-width: 520px) {
+  /* Kecilkan kontrol dashboard untuk layar ponsel sempit. */
   .admin-topbar { padding: 0 11px; gap: 8px; }
   .admin-global-search { width: 35px; height: 35px; justify-content: center; padding: 0; border-color: transparent; background: transparent; }
   .admin-global-search:focus-within { position: absolute; right: 108px; left: 54px; width: auto; justify-content: start; padding: 0 8px; border-color: #e9edef; background: #fff; }
@@ -2854,6 +2865,7 @@ body {
 }
 
 @media (max-width: 600px) {
+  /* Jaga tautan navigasi beranda tetap dapat digeser di ponsel. */
   .home-page .nav-links {
     justify-content: space-between;
     overflow-x: auto;
@@ -2873,6 +2885,7 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* Kurangi transisi dashboard untuk pengaturan aksesibilitas. */
   .admin-app *,
   .admin-app *::before,
   .admin-app *::after {

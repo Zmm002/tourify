@@ -1,12 +1,15 @@
+// Hasilkan Prisma Client untuk dipakai oleh route dan halaman server.
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
 }
 
+// Koneksi database diambil dari DATABASE_URL yang diatur di prisma.config.ts.
 datasource db {
   provider = "mysql"
 }
 
+// Data akun utama yang dimiliki pengguna.
 model User {
   id            String    @id
   name          String
@@ -24,6 +27,7 @@ model User {
   @@map("user")
 }
 
+// Sesi login yang aktif; ikut terhapus saat akun dihapus.
 model Session {
   id        String   @id
   expiresAt DateTime
@@ -39,6 +43,7 @@ model Session {
   @@map("session")
 }
 
+// Identitas login dan token provider yang terhubung ke akun.
 model Account {
   id                    String    @id
   accountId             String
@@ -60,6 +65,7 @@ model Account {
   @@map("account")
 }
 
+// Kode verifikasi email atau identitas login yang punya batas waktu.
 model Verification {
   id         String   @id
   identifier String
@@ -72,6 +78,7 @@ model Verification {
   @@map("verification")
 }
 
+// Catatan pembatasan permintaan supaya endpoint tidak mudah disalahgunakan.
 model RateLimit {
   id          String @id @default(cuid())
   key         String @unique
@@ -81,6 +88,7 @@ model RateLimit {
   @@map("rateLimit")
 }
 
+// Tugas workspace, termasuk status, prioritas, dan checklist.
 model Task {
   id          String       @id @default(cuid())
   userId      String
@@ -103,6 +111,7 @@ model Task {
   @@map("task")
 }
 
+// Pemesanan tiket yang dibuat atau dikelola pemilik akun.
 model Booking {
   id              String        @id @default(cuid())
   code            String        @unique @db.VarChar(32)
@@ -126,6 +135,7 @@ model Booking {
   @@map("booking")
 }
 
+// Wahana yang ditambahkan admin untuk katalog dan pemesanan.
 model Destination {
   id          String   @id @default(cuid())
   slug        String   @db.VarChar(48)
@@ -145,18 +155,21 @@ model Destination {
   @@map("destination")
 }
 
+// Tahapan pengerjaan sebuah tugas.
 enum TaskStatus {
   TODO
   IN_PROGRESS
   DONE
 }
 
+// Tingkat prioritas tugas.
 enum TaskPriority {
   LOW
   MEDIUM
   HIGH
 }
 
+// Status pemrosesan booking.
 enum BookingStatus {
   PENDING
   CONFIRMED
@@ -164,6 +177,7 @@ enum BookingStatus {
   CANCELLED
 }
 
+// Status pembayaran booking.
 enum PaymentStatus {
   UNPAID
   PAID

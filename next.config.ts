@@ -1,8 +1,10 @@
 import type { NextConfig } from "next";
 
+// Pengaturan Next.js dan header dasar untuk melindungi halaman web.
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   devIndicators: false,
+  // Header ini berlaku untuk seluruh halaman dan route aplikasi.
   async headers() {
     return [
       {

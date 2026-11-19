@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   description: "Kelola pemesanan, wahana, pelanggan, dan laporan Tourify.",
 };
 
+// Lindungi seluruh halaman admin dan pasang navigasi bersama di sekelilingnya.
 export default async function WorkspaceLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const session = await getCurrentSession();
   if (!session) redirect("/login");

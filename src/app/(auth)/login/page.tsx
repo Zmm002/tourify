@@ -7,11 +7,13 @@ import { FormEvent, useState } from "react";
 import { ArrowRight, Check, CircleCheck, LockKeyhole, Mail } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 
+// Form masuk mengirim kredensial ke Better Auth lalu membuka dashboard.
 export default function LoginPage() {
   const router = useRouter();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
+  // Kirim data formulir, tampilkan error bila gagal, dan arahkan setelah berhasil.
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setBusy(true);

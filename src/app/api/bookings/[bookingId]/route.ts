@@ -9,6 +9,7 @@ export const runtime = "nodejs";
 
 type RouteContext = { params: Promise<{ bookingId: string }> };
 
+// Mengubah status booking milik admin yang sedang masuk.
 export async function PATCH(request: Request, { params }: RouteContext) {
   if (!isSameOriginMutation(request)) return Response.json({ error: "Permintaan ditolak." }, { status: 403 });
   const session = await auth.api.getSession({ headers: await headers() });

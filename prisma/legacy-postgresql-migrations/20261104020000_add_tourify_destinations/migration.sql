@@ -1,3 +1,4 @@
+-- Migrasi katalog wahana PostgreSQL lama; disimpan untuk riwayat perubahan skema.
 CREATE TABLE "destination" (
   "id" TEXT NOT NULL,
   "slug" VARCHAR(48) NOT NULL,

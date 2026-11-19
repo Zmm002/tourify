@@ -1,6 +1,7 @@
 import type { Task } from "@/generated/prisma/client";
 import type { ChecklistItem, TaskDTO } from "@/lib/task-types";
 
+// Merapikan nilai JSON checklist dari database sebelum dipakai di antarmuka.
 function normalizeChecklist(value: Task["checklist"]): ChecklistItem[] {
   if (!Array.isArray(value)) return [];
   return value.flatMap((entry, index) => {
@@ -15,6 +16,7 @@ function normalizeChecklist(value: Task["checklist"]): ChecklistItem[] {
   });
 }
 
+// Memilih field tugas dan mengubah tanggal agar bisa dikirim melalui API.
 export function toTaskDTO(task: Task): TaskDTO {
   return {
     id: task.id,

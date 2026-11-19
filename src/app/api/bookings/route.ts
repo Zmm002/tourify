@@ -8,6 +8,7 @@ import { toBookingDTO, tourifyDestinations } from "@/lib/booking-types";
 
 export const runtime = "nodejs";
 
+// Mengambil daftar booking yang hanya dimiliki akun admin yang sedang masuk.
 export async function GET() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) return Response.json({ error: "Silakan masuk untuk melihat pemesanan." }, { status: 401 });
@@ -21,6 +22,7 @@ export async function GET() {
   return Response.json({ bookings: bookings.map(toBookingDTO) }, { headers: { "Cache-Control": "private, no-store" } });
 }
 
+// Membuat booking: memeriksa input, mencocokkan wahana, lalu menyimpan total tiket.
 export async function POST(request: Request) {
   if (!isSameOriginMutation(request)) return Response.json({ error: "Permintaan ditolak." }, { status: 403 });
   const session = await auth.api.getSession({ headers: await headers() });

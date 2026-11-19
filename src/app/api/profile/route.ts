@@ -6,6 +6,7 @@ import { updateProfileSchema } from "@/lib/task-validation";
 
 export const runtime = "nodejs";
 
+// Mengubah nama profil admin setelah memeriksa asal permintaan, sesi, dan isian.
 export async function PATCH(request: Request) {
   if (!isSameOriginMutation(request)) return Response.json({ error: "Permintaan ditolak." }, { status: 403 });
   const session = await auth.api.getSession({ headers: await headers() });

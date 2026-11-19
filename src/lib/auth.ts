@@ -3,12 +3,14 @@ import { betterAuth } from "better-auth/minimal";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "@/lib/prisma";
 
+// Rahasia wajib tersedia agar sesi autentikasi bisa ditandatangani dengan aman.
 const secret = process.env.BETTER_AUTH_SECRET;
 
 if (!secret || secret.length < 32) {
   throw new Error("BETTER_AUTH_SECRET must contain at least 32 characters. See .env.example.");
 }
 
+// Pengaturan login, sesi, pembatasan percobaan, dan cookie untuk aplikasi.
 export const auth = betterAuth({
   appName: "Tourify",
   baseURL: process.env.BETTER_AUTH_URL ?? "http://localhost:3000",

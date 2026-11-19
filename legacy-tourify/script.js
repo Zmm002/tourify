@@ -54,6 +54,7 @@ const destinations = {
 };
 
 /* KARTU DESTINASI */
+// Susun kartu panjang untuk daftar semua wahana.
 function createParkCard(id, park) {
   return `
     <a href="detail.html?id=${id}" class="park-card">
@@ -68,6 +69,7 @@ function createParkCard(id, park) {
   `;
 }
 
+// Susun kartu ringkas yang dipakai carousel beranda.
 function createFeaturedCard(id, park) {
   return `
     <a href="detail.html?id=${id}" class="destination-tile">
@@ -83,13 +85,13 @@ function createFeaturedCard(id, park) {
 /* BERANDA */
 const popularList = document.getElementById("popularList");
 if (popularList) {
+  // Isi kartu wahana lalu gandakan untuk membentuk carousel melingkar.
   popularList.innerHTML = Object.entries(destinations)
     .map(([id, park]) => createFeaturedCard(id, park))
     .join("");
 
-  // Repeat the destinations three times so the cards form a gentler ring around the viewer.
-  // CSS stops the rotation for visitors who prefer reduced motion, while keeping
-  // the curved layout in place.
+  // Gandakan kartu supaya seluruh lingkaran tetap terisi saat carousel bergerak.
+  // CSS menjaga bentuk kartu tetap ada walau animasi dimatikan.
   const originalCards = Array.from(popularList.children);
   for (let repeat = 1; repeat < 3; repeat += 1) {
     originalCards.forEach((card) => {
@@ -101,6 +103,7 @@ if (popularList) {
   }
 
   function positionDestinationCards() {
+    // Atur sudut dan jarak kartu berdasarkan lebar layar.
     const cards = Array.from(popularList.children);
     if (cards.length < 2) return;
 
@@ -122,6 +125,7 @@ if (popularList) {
 /* NAVBAR HOME: MUNCUL SAAT POINTER NAIK, SEMBUNYI SAAT TURUN */
 const homeNavbar = document.querySelector(".home-page .navbar");
 if (homeNavbar) {
+  // Gerakkan navbar mengikuti arah pointer atau scroll pengunjung.
   let previousPointerY = null;
   let previousScrollY = window.scrollY;
 
@@ -163,6 +167,7 @@ if (homeNavbar) {
 /* PENCARIAN */
 const headerSearchForm = document.getElementById("headerSearchForm");
 if (headerSearchForm) {
+  // Arahkan pencarian header ke halaman katalog dengan kata yang dicari.
   headerSearchForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const keyword = document.getElementById("headerSearch").value.trim();
@@ -172,11 +177,13 @@ if (headerSearchForm) {
 
 const destinationList = document.getElementById("destinationList");
 if (destinationList) {
+  // Isi daftar wahana sesuai kata pencarian dari URL atau kolom pencarian.
   const firstKeyword = new URLSearchParams(window.location.search).get("q") || "";
   const searchInput = document.getElementById("searchDestination");
   searchInput.value = firstKeyword;
 
   function renderDestinations(keyword) {
+    // Cocokkan nama dan lokasi sebelum menggambar ulang daftar.
     const search = keyword.toLowerCase();
     const filtered = Object.entries(destinations).filter(([, park]) =>
       park.name.toLowerCase().includes(search) ||
@@ -194,6 +201,7 @@ if (destinationList) {
 /* INFORMASI WAHANA */
 const detailContent = document.getElementById("detailContent");
 if (detailContent) {
+  // Tampilkan informasi dan daftar permainan dari wahana yang dipilih.
   const id = new URLSearchParams(window.location.search).get("id");
   const park = destinations[id];
 

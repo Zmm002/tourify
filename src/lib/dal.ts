@@ -5,10 +5,12 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { toTaskDTO } from "@/lib/task-dto";
 
+// Membaca sesi aktif dari cookie permintaan saat ini.
 export async function getCurrentSession() {
   return auth.api.getSession({ headers: await headers() });
 }
 
+// Mengambil profil dan tugas milik pengguna; pengguna tanpa sesi dikirim ke login.
 export async function getWorkspaceData() {
   const session = await getCurrentSession();
   if (!session) redirect("/login");

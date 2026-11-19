@@ -1,4 +1,5 @@
 -- CreateTable
+-- Membuat tabel awal akun, tugas, booking, dan wahana untuk MySQL.
 CREATE TABLE `user` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,

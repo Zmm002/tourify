@@ -8,6 +8,7 @@ import { createTaskSchema } from "@/lib/task-validation";
 
 export const runtime = "nodejs";
 
+// Mengambil tugas akun aktif dan mengubahnya ke bentuk data API.
 export async function GET() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) return Response.json({ error: "Silakan masuk untuk melihat tugas." }, { status: 401 });
@@ -21,6 +22,7 @@ export async function GET() {
   return Response.json({ tasks: tasks.map(toTaskDTO) }, { headers: { "Cache-Control": "private, no-store" } });
 }
 
+// Memvalidasi dan menyimpan tugas baru milik pengguna yang sedang masuk.
 export async function POST(request: Request) {
   if (!isSameOriginMutation(request)) return Response.json({ error: "Permintaan ditolak." }, { status: 403 });
   const session = await auth.api.getSession({ headers: await headers() });

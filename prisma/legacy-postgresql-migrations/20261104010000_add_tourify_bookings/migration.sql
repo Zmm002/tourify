@@ -1,3 +1,4 @@
+-- Migrasi booking PostgreSQL lama; runtime sekarang memakai skema MySQL.
 CREATE TYPE "BookingStatus" AS ENUM ('PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELLED');
 
 CREATE TYPE "PaymentStatus" AS ENUM ('UNPAID', 'PAID', 'REFUNDED');

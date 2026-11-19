@@ -2,6 +2,7 @@ import "server-only";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import { PrismaClient } from "@/generated/prisma/client";
 
+// Ambil dan periksa alamat database sebelum membuat koneksi MySQL.
 const connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {
@@ -20,6 +21,7 @@ if (!databaseUrl.username || !databaseName) {
   throw new Error("DATABASE_URL must include a username and database name.");
 }
 
+// Gunakan satu client selama development supaya hot reload tidak membuka banyak koneksi.
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 const adapter = new PrismaMariaDb({
   host: databaseUrl.hostname,

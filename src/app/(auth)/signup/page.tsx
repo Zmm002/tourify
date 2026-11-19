@@ -7,11 +7,13 @@ import { FormEvent, useState } from "react";
 import { ArrowRight, LockKeyhole, Mail, UserRound } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 
+// Form pendaftaran membuat akun admin baru sebelum membuka dashboard.
 export default function SignupPage() {
   const router = useRouter();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
+  // Kirim data pendaftaran dan jaga status tombol selama proses berlangsung.
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setBusy(true);

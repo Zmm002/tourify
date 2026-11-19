@@ -6,19 +6,27 @@ import type { FormEvent, MouseEvent as ReactMouseEvent } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
+  CalendarDays,
   Check,
+  Clock3,
+  Download,
+  Facebook,
+  Instagram,
   MapPin,
   Quote,
   Search,
   Star,
   Ticket,
+  Twitter,
   UsersRound,
+  Youtube,
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { TourifyDestination } from "@/lib/booking-types";
 
+// Contoh ulasan yang ditampilkan di landing page.
 const visitorReviews = [
   {
     name: "Nadia Putri",
@@ -40,21 +48,48 @@ const visitorReviews = [
   },
 ];
 
+// Beberapa agenda contoh untuk bagian Event Tourify.
+const eventHighlights = [
+  {
+    name: "Parade Cerita Tourify",
+    schedule: "Setiap Minggu · 16.00",
+    image: "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&w=1000&q=82",
+    detail: "Parade karakter dan musik keliling taman.",
+  },
+  {
+    name: "Malam Cahaya",
+    schedule: "Setiap Sabtu · 19.00",
+    image: "https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=1000&q=82",
+    detail: "Lampu, musik, dan suasana malam di tepi pantai.",
+  },
+  {
+    name: "Kenal Satwa",
+    schedule: "Sabtu & Minggu · 10.00",
+    image: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?auto=format&fit=crop&w=1000&q=82",
+    detail: "Sesi edukasi satwa untuk pengunjung kecil dan besar.",
+  },
+];
+
+// Katalog dikirim dari halaman server ke landing page interaktif.
 type TourifyHomeProps = {
   destinations: TourifyDestination[];
 };
 
+// Mengatur interaksi landing page: pencarian, scroll, galeri, dan detail wahana.
 export function TourifyHome({ destinations }: TourifyHomeProps) {
+  // State untuk pencarian, pilihan wahana, dialog detail, dan tombol unduh.
   const [query, setQuery] = useState("");
   const [submittedQuery, setSubmittedQuery] = useState("");
   const [activeSlug, setActiveSlug] = useState(destinations[0]?.slug ?? "");
   const [processPhotoIndex, setProcessPhotoIndex] = useState(0);
   const [selectedDestination, setSelectedDestination] = useState<TourifyDestination | null>(null);
+  const [showAppDownloadNotice, setShowAppDownloadNotice] = useState(false);
   const scrollFrame = useRef<number | null>(null);
   const savedScrollBehavior = useRef<string | null>(null);
   const closeDetailRef = useRef<HTMLButtonElement>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
 
+  // Hanya tampilkan wahana yang cocok dengan pencarian yang sudah dikirim.
   const visibleDestinations = useMemo(() => {
     const searchText = submittedQuery.toLowerCase();
 
@@ -67,23 +102,9 @@ export function TourifyHome({ destinations }: TourifyHomeProps) {
     );
   }, [destinations, submittedQuery]);
 
-  const areaCards = useMemo(() => {
-    const areas = new Map<string, TourifyDestination>();
-
-    destinations.forEach((destination) => {
-      if (!areas.has(destination.area)) areas.set(destination.area, destination);
-    });
-
-    return Array.from(areas.values());
-  }, [destinations]);
-
-  const moreAreaImage =
-    destinations.find((destination) =>
-      !areaCards.some((area) => area.slug === destination.slug),
-    )?.image ?? destinations[destinations.length - 1]?.image ?? "/tourify-coast-hero.png";
-
   const processPhoto = destinations[processPhotoIndex] ?? destinations[0];
 
+  // Bersihkan animasi scroll dan pulihkan perilaku scroll saat komponen ditutup.
   useEffect(() => {
     return () => {
       if (scrollFrame.current !== null) cancelAnimationFrame(scrollFrame.current);
@@ -94,6 +115,7 @@ export function TourifyHome({ destinations }: TourifyHomeProps) {
     };
   }, []);
 
+  // Mengunci halaman ketika dialog detail terbuka dan mendukung tombol Escape.
   useEffect(() => {
     if (!selectedDestination) return;
 
@@ -114,11 +136,13 @@ export function TourifyHome({ destinations }: TourifyHomeProps) {
     };
   }, [selectedDestination]);
 
+  // Sinkronkan kartu foto di bagian kunjungan dengan wahana yang dipilih.
   useEffect(() => {
     const selectedIndex = destinations.findIndex((destination) => destination.slug === activeSlug);
     if (selectedIndex >= 0) setProcessPhotoIndex(selectedIndex);
   }, [activeSlug, destinations]);
 
+  // Ganti foto panduan kunjungan secara berkala jika gerakan tidak dikurangi.
   useEffect(() => {
     if (
       destinations.length < 2 ||
@@ -132,6 +156,7 @@ export function TourifyHome({ destinations }: TourifyHomeProps) {
     return () => window.clearInterval(timer);
   }, [destinations.length]);
 
+  // Tampilkan elemen saat masuk viewport dan sembunyikan lagi saat keluar.
   useEffect(() => {
     const revealItems = document.querySelectorAll<HTMLElement>(".tourify-reveal");
 
@@ -151,8 +176,9 @@ export function TourifyHome({ destinations }: TourifyHomeProps) {
 
     revealItems.forEach((item) => revealOnScroll.observe(item));
     return () => revealOnScroll.disconnect();
-  }, [areaCards, visibleDestinations]);
+  }, [visibleDestinations]);
 
+  // Menggulir ke bagian tertentu dengan animasi halus dan memperbarui URL.
   function scrollToTarget(sectionId: string, updateHash = true) {
     const target = document.getElementById(sectionId);
 
@@ -188,6 +214,7 @@ export function TourifyHome({ destinations }: TourifyHomeProps) {
     savedScrollBehavior.current = document.documentElement.style.scrollBehavior;
     document.documentElement.style.scrollBehavior = "auto";
 
+    // Maju sedikit demi sedikit agar scroll terasa mulus dan bisa dibatalkan.
     function animateScroll(now: number) {
       const progress = Math.min((now - startedAt) / duration, 1);
       const eased =
@@ -210,6 +237,7 @@ export function TourifyHome({ destinations }: TourifyHomeProps) {
     scrollFrame.current = requestAnimationFrame(animateScroll);
   }
 
+  // Menghubungkan tautan navigasi dengan animasi scroll di halaman.
   function scrollToSection(
     event: ReactMouseEvent<HTMLAnchorElement>,
     sectionId: string,
@@ -218,6 +246,7 @@ export function TourifyHome({ destinations }: TourifyHomeProps) {
     scrollToTarget(sectionId);
   }
 
+  // Menyaring katalog setelah formulir pencarian dikirim.
   function searchDestinations(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const searchText = query.trim();
@@ -231,13 +260,7 @@ export function TourifyHome({ destinations }: TourifyHomeProps) {
     setActiveSlug(nextResults[0]?.slug ?? "");
   }
 
-  function pickArea(destination: TourifyDestination) {
-    setQuery(destination.area);
-    setSubmittedQuery(destination.area);
-    setActiveSlug(destination.slug);
-    scrollToTarget("wahana");
-  }
-
+  // Simpan fokus saat ini agar bisa dikembalikan setelah dialog ditutup.
   function openDestination(destination: TourifyDestination) {
     returnFocusRef.current = document.activeElement instanceof HTMLElement
       ? document.activeElement
@@ -247,6 +270,7 @@ export function TourifyHome({ destinations }: TourifyHomeProps) {
 
   return (
     <main className="tourify-home" id="beranda">
+      {/* Banner pembuka, navigasi, dan tombol untuk menjelajahi taman. */}
       <section className="public-hero">
         <div className="public-hero-photo" aria-hidden="true" />
         <div className="public-hero-shade" aria-hidden="true" />
@@ -267,10 +291,10 @@ export function TourifyHome({ destinations }: TourifyHomeProps) {
               Beranda
             </a>
             <a href="#wahana" onClick={(event) => scrollToSection(event, "wahana")}>
-              Wahana
+              Jelajah
             </a>
-            <a href="#area-seru" onClick={(event) => scrollToSection(event, "area-seru")}>
-              Area bermain
+            <a href="#event" onClick={(event) => scrollToSection(event, "event")}>
+              Event
             </a>
             <a href="#cara-pesan" onClick={(event) => scrollToSection(event, "cara-pesan")}>
               Cara berkunjung
@@ -308,7 +332,20 @@ export function TourifyHome({ destinations }: TourifyHomeProps) {
               >
                 Cara berkunjung <ArrowRight size={15} />
               </a>
+              <button
+                className="public-button public-button-app"
+                type="button"
+                aria-expanded={showAppDownloadNotice}
+                onClick={() => setShowAppDownloadNotice((isOpen) => !isOpen)}
+              >
+                Unduh aplikasi <Download size={15} />
+              </button>
             </div>
+            {showAppDownloadNotice && (
+              <p className="public-app-download-notice" role="status">
+                Aplikasi Tourify belum tersedia untuk diunduh. <a href="mailto:halo@tourify.id?subject=Info%20Aplikasi%20Tourify">Hubungi kami</a> untuk info rilis.
+              </p>
+            )}
           </div>
 
           <div className="public-hero-bottom">
@@ -323,67 +360,12 @@ export function TourifyHome({ destinations }: TourifyHomeProps) {
         </div>
       </section>
 
-      <section className="public-area-section" id="area-seru">
-        <div className="public-section-heading tourify-reveal">
-          <div>
-            <span className="public-eyebrow">AREA BERMAIN</span>
-            <h2>Satu taman,<br />banyak suasana.</h2>
-          </div>
-          <p>
-            Mau main air, mencoba permainan keluarga, atau menikmati udara
-            terbuka? Pilih area yang paling cocok buatmu.
-          </p>
-        </div>
-
-        <div className="public-area-grid">
-          {areaCards.map((destination, index) => (
-            <button
-              className={
-                "public-area-card tourify-reveal" +
-                (index === 0 ? " public-area-card-featured" : "")
-              }
-              key={destination.area}
-              type="button"
-              onClick={() => pickArea(destination)}
-              style={{ transitionDelay: Math.min(index * 90, 270) + "ms" }}
-            >
-              <span
-                className="public-area-photo"
-                style={{ backgroundImage: `url("${destination.image}")` }}
-                aria-hidden="true"
-              />
-              <span className="public-area-content">
-                <small>{String(index + 1).padStart(2, "0")} / TOURIFY</small>
-                <strong>{destination.area}</strong>
-                <span>{destination.category} <ArrowUpRight size={15} /></span>
-              </span>
-            </button>
-          ))}
-          <a
-            className="public-area-card public-area-card-all tourify-reveal"
-            href="#wahana"
-            onClick={(event) => scrollToSection(event, "wahana")}
-            style={{ transitionDelay: Math.min(areaCards.length * 90, 270) + "ms" }}
-          >
-            <span
-              className="public-area-photo"
-              style={{ backgroundImage: `url("${moreAreaImage}")` }}
-              aria-hidden="true"
-            />
-            <span className="public-area-content">
-              <small>LEBIH BANYAK UNTUK DICOBA</small>
-              <strong>Lihat semua wahana</strong>
-              <span>Jelajahi pilihan <ArrowRight size={15} /></span>
-            </span>
-          </a>
-        </div>
-      </section>
-
+      {/* Katalog wahana, pencarian, dan dialog detail setiap pilihan. */}
       <section className="public-destinations" id="wahana">
         <div className="public-section-heading tourify-reveal">
           <div>
-            <span className="public-eyebrow">WAHANA FAVORIT</span>
-            <h2>Pilih serunya harimu.</h2>
+            <span className="public-eyebrow">PILIH AKTIVITASMU</span>
+            <h2>Jelajah dan Rekreasi</h2>
           </div>
           <form className="public-search-form" onSubmit={searchDestinations}>
             <label>
@@ -413,23 +395,26 @@ export function TourifyHome({ destinations }: TourifyHomeProps) {
                   className="public-ride-photo"
                   style={{ backgroundImage: `url("${destination.image}")` }}
                 >
-                  <span>{destination.category}</span>
-                  <button
-                    className="public-ride-arrow"
-                    type="button"
-                    onClick={() => openDestination(destination)}
-                    aria-label={`Tentang ${destination.name}`}
-                    title={`Tentang ${destination.name}`}
-                  >
-                    <ArrowUpRight size={17} />
-                  </button>
-                </div>
-                <div className="public-ride-details">
-                  <div>
-                    <h3>{destination.name}</h3>
-                    <span><MapPin size={13} /> {destination.area}</span>
+                  <div className="public-ride-poster-top">
+                    <span>{destination.category}</span>
+                    <button
+                      className="public-ride-arrow"
+                      type="button"
+                      onClick={() => openDestination(destination)}
+                      aria-label={`Tentang ${destination.name}`}
+                      title={`Tentang ${destination.name}`}
+                    >
+                      <ArrowUpRight size={17} />
+                    </button>
                   </div>
-                  <Ticket size={18} />
+                  <div className="public-ride-poster-copy">
+                    <h3>{destination.name}</h3>
+                    <span className="public-ride-hours-label">Jam operasional</span>
+                    <strong>{destination.weekdayHours ?? "Buka setiap hari"}</strong>
+                    {destination.weekendHours && <strong>{destination.weekendHours}</strong>}
+                    <span className="public-ride-ticket-label">Tiket masuk</span>
+                    <strong>Mulai Rp {destination.price.toLocaleString("id-ID")}</strong>
+                  </div>
                 </div>
               </article>
             ))}
@@ -457,6 +442,45 @@ export function TourifyHome({ destinations }: TourifyHomeProps) {
         </p>
       </section>
 
+      {/* Agenda rutin dan acara utama yang berlangsung di Tourify. */}
+      <section className="public-events" id="event">
+        <div className="public-section-heading tourify-reveal">
+          <div>
+            <span className="public-eyebrow">AGENDA TAMAN</span>
+            <h2>Event Tourify</h2>
+          </div>
+          <p>Suasana taman makin seru dengan acara rutin untuk dinikmati bersama.</p>
+        </div>
+        <article className="public-event-feature tourify-reveal">
+          <div className="public-event-feature-photo" aria-hidden="true" />
+          <div className="public-event-feature-shade" aria-hidden="true" />
+          <div className="public-event-feature-copy">
+            <span>ACARA AKHIR PEKAN</span>
+            <h3>Festival Malam Tourify</h3>
+            <p>Nikmati pertunjukan musik dan cahaya di tepi taman.</p>
+            <div><CalendarDays size={15} /> Setiap Sabtu · mulai 18.30</div>
+          </div>
+        </article>
+        <div className="public-event-grid">
+          {eventHighlights.map((event, index) => (
+            <article
+              className="public-event-card tourify-reveal"
+              key={event.name}
+              style={{ transitionDelay: index * 90 + "ms" }}
+            >
+              <div className="public-event-card-photo" style={{ backgroundImage: `url("${event.image}")` }}>
+                <span><Clock3 size={12} /> {event.schedule}</span>
+              </div>
+              <div className="public-event-card-copy">
+                <h3>{event.name}</h3>
+                <p>{event.detail}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* Panduan kunjungan dengan foto wahana yang berganti otomatis. */}
       <section className="public-process" id="cara-pesan">
         <div
           className="public-process-photo tourify-reveal"
@@ -507,6 +531,7 @@ export function TourifyHome({ destinations }: TourifyHomeProps) {
         </div>
       </section>
 
+      {/* Cerita dan ulasan contoh dari pengunjung. */}
       <section className="public-reviews" id="ulasan">
         <div className="public-reviews-heading tourify-reveal">
           <div>
@@ -543,6 +568,7 @@ export function TourifyHome({ destinations }: TourifyHomeProps) {
         </div>
       </section>
 
+      {/* Ajakan terakhir untuk melihat katalog sebelum bagian bantuan. */}
       <section className="public-last-call">
         <div className="public-last-call-photo" aria-hidden="true" />
         <div className="public-last-call-shade" aria-hidden="true" />
@@ -558,9 +584,44 @@ export function TourifyHome({ destinations }: TourifyHomeProps) {
             Lihat semua wahana <ArrowRight size={16} />
           </a>
         </div>
-        <span className="public-last-call-mark"><Check size={14} /> Banyak wahana, satu tempat</span>
       </section>
 
+      {/* Kontak pengunjung, tautan sosial, dan maskot customer care. */}
+      <section className="public-help-section" id="bantuan">
+        <div className="public-help-contact">
+          <p>Customer Care Tourify <span>•</span></p>
+          <a href="mailto:halo@tourify.id">Hubungi kami <ArrowUpRight size={15} /></a>
+          <div className="public-help-socials" aria-label="Media sosial Tourify">
+            <a href="https://instagram.com" aria-label="Instagram Tourify"><Instagram size={18} /></a>
+            <a href="https://facebook.com" aria-label="Facebook Tourify"><Facebook size={18} /></a>
+            <a href="https://twitter.com" aria-label="Twitter Tourify"><Twitter size={18} /></a>
+            <a href="https://youtube.com" aria-label="YouTube Tourify"><Youtube size={19} /></a>
+          </div>
+        </div>
+        <div className="public-help-banner tourify-reveal">
+          <div className="public-help-copy">
+            <span className="public-eyebrow">BANTUAN PENGUNJUNG</span>
+            <h2>Ada yang bisa kami bantu?</h2>
+            <p>Tanya soal wahana, jam operasional, atau rencana kunjunganmu.</p>
+            <a href="mailto:halo@tourify.id?subject=Bantuan%20Tourify">
+              Pusat Bantuan <ArrowRight size={17} />
+            </a>
+          </div>
+          <div className="public-help-visual" aria-hidden="true">
+            <span className="public-help-orbit public-help-orbit-one" />
+            <span className="public-help-orbit public-help-orbit-two" />
+            <Image
+              src="/tourify-operator-mascot-left.png"
+              width={320}
+              height={330}
+              alt=""
+              className="public-help-mascot"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Navigasi tambahan dan informasi penutup situs. */}
       <footer className="public-footer">
         <div className="public-footer-grid">
           <div className="public-footer-about">
@@ -573,13 +634,14 @@ export function TourifyHome({ destinations }: TourifyHomeProps) {
           <nav className="public-footer-group" aria-label="Jelajahi Tourify">
             <h3>Jelajahi</h3>
             <a href="#beranda" onClick={(event) => scrollToSection(event, "beranda")}>Beranda</a>
-            <a href="#area-seru" onClick={(event) => scrollToSection(event, "area-seru")}>Area bermain</a>
-            <a href="#wahana" onClick={(event) => scrollToSection(event, "wahana")}>Wahana favorit</a>
+            <a href="#wahana" onClick={(event) => scrollToSection(event, "wahana")}>Jelajah dan rekreasi</a>
+            <a href="#event" onClick={(event) => scrollToSection(event, "event")}>Event Tourify</a>
           </nav>
           <nav className="public-footer-group" aria-label="Info pengunjung">
             <h3>Info pengunjung</h3>
             <a href="#cara-pesan" onClick={(event) => scrollToSection(event, "cara-pesan")}>Cara berkunjung</a>
             <a href="#ulasan" onClick={(event) => scrollToSection(event, "ulasan")}>Cerita pengunjung</a>
+            <a href="#bantuan" onClick={(event) => scrollToSection(event, "bantuan")}>Pusat bantuan</a>
             <Link href="/dashboard">Dashboard Admin <ArrowUpRight size={13} /></Link>
           </nav>
           <div className="public-footer-group public-footer-app">

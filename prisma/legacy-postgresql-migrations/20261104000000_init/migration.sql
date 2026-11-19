@@ -1,3 +1,4 @@
+-- Migrasi PostgreSQL lama; disimpan sebagai catatan, bukan dipakai database MySQL saat ini.
 -- CreateSchema
 CREATE SCHEMA IF NOT EXISTS "public";
 

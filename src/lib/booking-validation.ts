@@ -1,10 +1,12 @@
 import { z } from "zod";
 
+// Memastikan tanggal berbentuk YYYY-MM-DD dan benar-benar tanggal kalender.
 const visitDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Tanggal kunjungan tidak valid.").refine((value) => {
   const parsed = new Date(`${value}T00:00:00.000Z`);
   return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
 }, "Tanggal kunjungan tidak valid.");
 
+// Aturan untuk data booking baru yang datang dari formulir atau API.
 export const createBookingSchema = z.object({
   customerName: z.string().trim().min(2, "Nama pelanggan minimal 2 karakter.").max(100),
   customerEmail: z.email("Alamat email tidak valid.").max(254),
@@ -15,6 +17,7 @@ export const createBookingSchema = z.object({
   paymentStatus: z.enum(["UNPAID", "PAID"]).default("UNPAID"),
 });
 
+// Aturan untuk data wahana baru yang ditambahkan oleh admin.
 export const createDestinationSchema = z.object({
   name: z.string().trim().min(2, "Nama wahana minimal 2 karakter.").max(100),
   area: z.string().trim().min(2, "Lokasi minimal 2 karakter.").max(100),
@@ -24,6 +27,7 @@ export const createDestinationSchema = z.object({
   image: z.string().trim().max(500).optional().default("").refine((value) => !value || (value.startsWith("https://") && z.url().safeParse(value).success), "Foto harus menggunakan tautan HTTPS."),
 });
 
+// Hanya status booking dan pembayaran yang boleh diperbarui di endpoint ini.
 export const updateBookingSchema = z.object({
   status: z.enum(["PENDING", "CONFIRMED", "COMPLETED", "CANCELLED"]).optional(),
   paymentStatus: z.enum(["UNPAID", "PAID", "REFUNDED"]).optional(),

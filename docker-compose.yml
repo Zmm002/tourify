@@ -1,3 +1,4 @@
+# Database MySQL lokal untuk development; datanya disimpan di volume bernama.
 services:
   db:
     image: mysql:8.4
@@ -19,4 +20,5 @@ services:
       retries: 10
 
 volumes:
+  # Volume ini tetap ada saat container MySQL dimatikan atau dibuat ulang.
   tourify_mysql_data:

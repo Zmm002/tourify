@@ -1,3 +1,4 @@
+// Contoh data yang dipakai saat browser belum punya data admin tersimpan.
 const demoBookings = [
   { id: "TRF-24108", name: "Nadia Putri", email: "nadia.putri@email.com", destination: "Dufan", visitDate: "05 Nov 2026", tickets: 3, total: 450000, status: "Menunggu" },
   { id: "TRF-24107", name: "Bima Pratama", email: "bima.pratama@email.com", destination: "Ocean Park", visitDate: "06 Nov 2026", tickets: 2, total: 300000, status: "Terkonfirmasi" },
@@ -9,6 +10,7 @@ const demoBookings = [
   { id: "TRF-24101", name: "Rizky Mahendra", email: "rizky.mahendra@email.com", destination: "Trans Studio", visitDate: "12 Nov 2026", tickets: 4, total: 720000, status: "Selesai" }
 ];
 
+// Katalog wahana awal untuk halaman kelola destinasi.
 const defaultDestinations = [
   { id: "ocean", name: "Ocean Park", city: "Jakarta Selatan", price: 100000, orders: 86, active: true, image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=180&q=80" },
   { id: "dufan", name: "Dufan", city: "Jakarta Utara", price: 150000, orders: 72, active: true, image: "https://images.unsplash.com/photo-1513889961551-628c1e5e2ee9?auto=format&fit=crop&w=180&q=80" },
@@ -16,6 +18,7 @@ const defaultDestinations = [
   { id: "trans-studio", name: "Trans Studio", city: "Bandung", price: 180000, orders: 32, active: true, image: "https://images.unsplash.com/photo-1504215680853-026ed2a45def?auto=format&fit=crop&w=180&q=80" }
 ];
 
+// Ambil data dari penyimpanan browser; gunakan nilai awal kalau belum ada atau rusak.
 function readLocal(key, fallback) {
   try {
     const value = localStorage.getItem(key);
@@ -25,6 +28,7 @@ function readLocal(key, fallback) {
   }
 }
 
+// Simpan perubahan lokal supaya tetap ada setelah halaman dibuka lagi.
 function saveLocal(key, value) {
   try {
     localStorage.setItem(key, JSON.stringify(value));
@@ -33,6 +37,7 @@ function saveLocal(key, value) {
   }
 }
 
+// Data dan pilihan UI yang dipakai selama dashboard berjalan.
 let bookings = readLocal("tourify-admin-bookings", demoBookings);
 let destinations = readLocal("tourify-admin-destinations", defaultDestinations);
 let activeView = "overview";
@@ -40,10 +45,12 @@ let activeBookingFilter = "Semua";
 let searchTerm = "";
 let toastTimer;
 
+// Helper format angka, keamanan teks HTML, dan inisial nama pelanggan.
 const money = (amount) => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(amount);
 const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
 const initials = (name) => name.split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase();
 
+// Tampilkan pesan singkat setelah aksi admin.
 function showToast(message) {
   const toast = document.getElementById("adminToast");
   toast.textContent = message;
@@ -52,6 +59,7 @@ function showToast(message) {
   toastTimer = window.setTimeout(() => toast.classList.remove("is-visible"), 2800);
 }
 
+// Isi angka ringkasan dashboard dari data pesanan dan wahana.
 function renderStats() {
   const pending = bookings.filter((booking) => booking.status === "Menunggu").length;
   document.getElementById("pendingCount").textContent = pending;
@@ -64,6 +72,7 @@ function renderStats() {
   document.getElementById("destinationCountLabel").textContent = `${destinations.length} destinasi terdaftar`;
 }
 
+// Buat satu baris tabel untuk pesanan, termasuk tombol perubahan status.
 function bookingRow(booking, compact = false) {
   const statusClass = booking.status.toLowerCase().replace(/\s+/g, "-");
   const nextAction = booking.status === "Menunggu" ? "Konfirmasi" : booking.status === "Terkonfirmasi" ? "Selesaikan" : "Selesai";
@@ -79,6 +88,7 @@ function bookingRow(booking, compact = false) {
   </tr>`;
 }
 
+// Gambar ulang tabel pesanan terbaru dan tabel semua pesanan yang sudah difilter.
 function renderBookingRows() {
   const recent = bookings.slice(0, 5);
   document.getElementById("recentBookingsBody").innerHTML = recent.map((booking) => bookingRow(booking, true)).join("");
@@ -94,6 +104,7 @@ function renderBookingRows() {
   document.getElementById("bookingResultsLabel").textContent = `Menampilkan ${filtered.length} dari ${bookings.length} pesanan`;
 }
 
+// Tampilkan empat wahana dengan jumlah pesanan terbanyak di dashboard.
 function renderPopularDestinations() {
   const sorted = [...destinations].sort((a, b) => b.orders - a.orders).slice(0, 4);
   document.getElementById("popularDestinationList").innerHTML = sorted.map((destination, index) => `
@@ -105,6 +116,7 @@ function renderPopularDestinations() {
     </div>`).join("");
 }
 
+// Isi tabel katalog wahana yang bisa diedit, dinonaktifkan, atau dihapus.
 function renderDestinations() {
   document.getElementById("destinationsBody").innerHTML = destinations.length
     ? destinations.map((destination) => `
@@ -119,6 +131,7 @@ function renderDestinations() {
     : `<tr><td class="admin-empty-state" colspan="6">Belum ada destinasi. Tambahkan wahana pertama.</td></tr>`;
 }
 
+// Perbarui semua ringkasan dan tabel setelah data berubah.
 function renderAll() {
   renderStats();
   renderBookingRows();
@@ -127,6 +140,7 @@ function renderAll() {
   applySearch(searchTerm);
 }
 
+// Ganti panel admin aktif dan rapikan status menu serta pencarian.
 function changeView(view) {
   const viewPanel = document.querySelector(`[data-view-panel="${view}"]`);
   if (!viewPanel) return;
@@ -149,11 +163,13 @@ function changeView(view) {
   closeSidebar();
 }
 
+// Tutup menu samping pada tampilan layar kecil.
 function closeSidebar() {
   document.body.classList.remove("admin-sidebar-open");
   document.getElementById("menuToggle").setAttribute("aria-expanded", "false");
 }
 
+// Saring pesanan dan wahana berdasarkan kata yang diketik.
 function applySearch(value) {
   searchTerm = value.trim().toLowerCase();
   renderBookingRows();
@@ -162,21 +178,25 @@ function applySearch(value) {
   destinationRows.forEach((row) => { row.hidden = !row.dataset.search.includes(searchTerm); });
 }
 
+// Pilih status pesanan yang ingin ditampilkan.
 function setBookingFilter(filter) {
   activeBookingFilter = filter;
   document.querySelectorAll("[data-booking-filter]").forEach((button) => button.classList.toggle("is-active", button.dataset.bookingFilter === filter));
   renderBookingRows();
 }
 
+// Simpan data utama admin ke penyimpanan browser.
 function persistData() {
   saveLocal("tourify-admin-bookings", bookings);
   saveLocal("tourify-admin-destinations", destinations);
 }
 
+// Ubah nama wahana menjadi ID singkat untuk tautan dan penyimpanan.
 function slugify(value) {
   return value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "wahana";
 }
 
+// Buka formulir tambah atau edit wahana, lalu isi data jika sedang mengedit.
 function openDestinationDialog(destination = null) {
   const dialog = document.getElementById("destinationDialog");
   document.getElementById("destinationDialogTitle").textContent = destination ? "Edit wahana" : "Tambah wahana";
@@ -188,6 +208,7 @@ function openDestinationDialog(destination = null) {
   document.getElementById("destinationName").focus();
 }
 
+// Unduh seluruh pesanan sebagai berkas CSV.
 function exportBookings() {
   const columns = ["ID pesanan", "Pelanggan", "Email", "Destinasi", "Tanggal kunjungan", "Jumlah tiket", "Total", "Status"];
   const rows = bookings.map((booking) => [booking.id, booking.name, booking.email, booking.destination, booking.visitDate, booking.tickets, booking.total, booking.status]);
@@ -200,12 +221,14 @@ function exportBookings() {
   showToast("Data pesanan berhasil diunduh.");
 }
 
+// Sambungkan menu, filter, dialog, dan tombol ekspor ke aksi dashboard.
 document.querySelectorAll("[data-view]").forEach((button) => button.addEventListener("click", () => changeView(button.dataset.view)));
 document.querySelectorAll("[data-open-destination]").forEach((button) => button.addEventListener("click", () => openDestinationDialog()));
 document.querySelectorAll("[data-close-dialog]").forEach((button) => button.addEventListener("click", () => document.getElementById("destinationDialog").close()));
 document.querySelectorAll("[data-booking-filter]").forEach((button) => button.addEventListener("click", () => setBookingFilter(button.dataset.bookingFilter)));
 document.querySelectorAll("[data-export-bookings]").forEach((button) => button.addEventListener("click", exportBookings));
 
+// Aksi pada tabel pesanan: maju dari menunggu ke konfirmasi lalu selesai.
 document.getElementById("bookingsBody").addEventListener("click", (event) => {
   const action = event.target.closest("[data-booking-action]");
   if (!action) return;
@@ -217,6 +240,7 @@ document.getElementById("bookingsBody").addEventListener("click", (event) => {
   showToast(`Status ${booking.id} diperbarui menjadi ${booking.status.toLowerCase()}.`);
 });
 
+// Buka daftar lengkap ketika tombol pesanan terbaru dipilih.
 document.getElementById("recentBookingsBody").addEventListener("click", (event) => {
   const action = event.target.closest("[data-booking-action]");
   if (!action) return;
@@ -225,6 +249,7 @@ document.getElementById("recentBookingsBody").addEventListener("click", (event) 
   if (booking) setBookingFilter(booking.status);
 });
 
+// Kelola status aktif, edit, dan hapus wahana dari tabel katalog.
 document.getElementById("destinationsBody").addEventListener("click", (event) => {
   const toggle = event.target.closest("[data-destination-toggle]");
   const edit = event.target.closest("[data-edit-destination]");
@@ -251,6 +276,7 @@ document.getElementById("destinationsBody").addEventListener("click", (event) =>
   }
 });
 
+// Validasi lalu simpan wahana baru atau perubahan wahana yang dipilih.
 document.getElementById("destinationForm").addEventListener("submit", (event) => {
   event.preventDefault();
   const idInput = document.getElementById("destinationId").value;
@@ -278,6 +304,7 @@ document.getElementById("destinationForm").addEventListener("submit", (event) =>
   showToast(existing ? "Informasi wahana berhasil diperbarui." : "Wahana baru berhasil ditambahkan.");
 });
 
+// Samakan kolom pencarian di header dengan halaman pesanan atau wahana.
 document.getElementById("adminSearch").addEventListener("input", (event) => {
   if (activeView === "bookings") document.getElementById("bookingSearch").value = event.target.value;
   if (activeView === "destinations") document.getElementById("destinationSearch").value = event.target.value;
@@ -293,6 +320,7 @@ document.getElementById("destinationSearch").addEventListener("input", (event) =
   applySearch(value);
 });
 
+// Perilaku menu mobile, notifikasi, dan pintasan pencarian.
 document.getElementById("menuToggle").addEventListener("click", () => {
   const isOpen = document.body.classList.toggle("admin-sidebar-open");
   document.getElementById("menuToggle").setAttribute("aria-expanded", String(isOpen));
@@ -306,6 +334,7 @@ window.addEventListener("keydown", (event) => {
   }
 });
 
+// Simpan profil admin dan perbarui nama yang terlihat di dashboard.
 document.getElementById("profileForm").addEventListener("submit", (event) => {
   event.preventDefault();
   const name = document.getElementById("profileName").value.trim();
@@ -318,6 +347,7 @@ document.getElementById("profileForm").addEventListener("submit", (event) => {
   showToast("Profil administrator berhasil diperbarui.");
 });
 
+// Pulihkan profil serta preferensi notifikasi ketika halaman dibuka ulang.
 const savedProfile = readLocal("tourify-admin-profile", null);
 if (savedProfile) {
   document.getElementById("profileName").value = savedProfile.name;
@@ -338,6 +368,7 @@ document.querySelectorAll(".admin-toggle-row input").forEach((input) => input.ad
   showToast("Preferensi notifikasi disimpan.");
 }));
 
+// Tampilkan tanggal hari ini dan render awal dashboard.
 const date = new Intl.DateTimeFormat("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(new Date());
 document.getElementById("currentDate").textContent = date.toLocaleUpperCase("id-ID");
 

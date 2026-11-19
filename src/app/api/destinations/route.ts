@@ -8,6 +8,7 @@ import { isSameOriginMutation } from "@/lib/security";
 
 export const runtime = "nodejs";
 
+// Menggabungkan katalog awal dengan wahana khusus milik akun admin.
 export async function GET() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) return Response.json({ error: "Silakan masuk untuk melihat katalog wahana." }, { status: 401 });
@@ -23,6 +24,7 @@ export async function GET() {
   });
 }
 
+// Menyimpan wahana baru milik admin dan membuat slug unik untuk URL-nya.
 export async function POST(request: Request) {
   if (!isSameOriginMutation(request)) return Response.json({ error: "Permintaan ditolak." }, { status: 403 });
   const session = await auth.api.getSession({ headers: await headers() });

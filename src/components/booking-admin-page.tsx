@@ -10,9 +10,12 @@ import {
 import { useWorkspace } from "@/components/workspace-shell";
 import { tourifyDestinations, type BookingDTO, type BookingInput, type BookingStatus, type DestinationInput, type PaymentStatus } from "@/lib/booking-types";
 
+// Semua halaman admin dirender dari satu komponen dengan variasi view.
 type View = "dashboard" | "bookings" | "destinations" | "customers" | "reports" | "settings" | "profile";
+// Label status internal menjadi teks yang mudah dibaca di dashboard.
 const statusLabels: Record<BookingStatus, string> = { PENDING: "Menunggu", CONFIRMED: "Dikonfirmasi", COMPLETED: "Selesai", CANCELLED: "Dibatalkan" };
 const paymentLabels: Record<PaymentStatus, string> = { UNPAID: "Belum dibayar", PAID: "Lunas", REFUNDED: "Dikembalikan" };
+// Pemformat harga dan angka lokal Indonesia.
 const idr = {
   format(value: number) {
     const grouped = Math.round(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -31,18 +34,24 @@ const idrCompact = {
 };
 const idNumber = new Intl.NumberFormat("id-ID");
 
+// Membuat tanggal singkat untuk tabel dan ringkasan.
 function formatDate(value: string, options: Intl.DateTimeFormatOptions = { day: "numeric", month: "short", year: "numeric" }) {
   return new Intl.DateTimeFormat("id-ID", options).format(new Date(value));
 }
+// Nilai awal input tanggal mengikuti zona waktu Jakarta.
 function dateInputValue() { return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jakarta" }).format(new Date()); }
+// Membuat avatar teks dari dua huruf pertama nama.
 function initials(name: string) { return name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase()).join("") || "T"; }
+// Dipakai untuk menghitung pendapatan dan booking pada bulan berjalan.
 function isSameMonth(value: string) { const date = new Date(value); const now = new Date(); return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear(); }
 
+// Memilih halaman admin, membuka dialog booking, dan menampilkan notifikasi.
 export function BookingAdminPage({ view }: { view: View }) {
   const workspace = useWorkspace();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [toast, setToast] = useState("");
 
+  // Buat booking lalu tutup dialog dan beri konfirmasi saat berhasil.
   async function create(input: BookingInput) {
     const booking = await workspace.createBooking(input);
     if (booking) {
@@ -68,10 +77,12 @@ export function BookingAdminPage({ view }: { view: View }) {
   </div>;
 }
 
+// Header yang dipakai ulang di seluruh halaman panel admin.
 function ViewHeading({ eyebrow, title, description, action, actionLabel = "Booking baru", icon: Icon = Ticket }: { eyebrow: string; title: string; description: string; action?: () => void; actionLabel?: string; icon?: typeof Ticket }) {
   return <div className="view-heading admin-view-heading"><div><span className="eyebrow"><Icon size={14} />{eyebrow}</span><h1>{title}</h1><p>{description}</p></div>{action && <button className="button button-coral admin-primary-button" onClick={action}><Plus size={17} />{actionLabel}</button>}</div>;
 }
 
+// Ringkasan angka, grafik mingguan, status, booking terbaru, dan wahana populer.
 function DashboardView({ onCreate }: { onCreate: () => void }) {
   const { bookings, filteredBookings, loading, user, updateBooking, destinations } = useWorkspace();
   const monthBookings = bookings.filter((booking) => isSameMonth(booking.createdAt));
@@ -129,10 +140,12 @@ function DashboardView({ onCreate }: { onCreate: () => void }) {
   </div>;
 }
 
+// Satu kartu angka ringkasan dengan ikon dan warna kategori.
 function MetricCard({ label, value, note, icon: Icon, tint }: { label: string; value: string; note: string; icon: typeof Ticket; tint: string }) {
   return <article className="admin-metric-card"><span className={`admin-metric-icon metric-${tint}`}><Icon size={18} /></span><span className="admin-metric-label">{label}</span><strong>{value}</strong><span className="admin-metric-note">{note}</span><ArrowUpRight size={15} className="admin-metric-trend" /></article>;
 }
 
+// Halaman daftar booking dengan filter dan aksi memperbarui status.
 function BookingsView({ onCreate }: { onCreate: () => void }) {
   const { filteredBookings, loading, statusFilter, setStatusFilter, updateBooking } = useWorkspace();
   const filters: Array<["ALL" | BookingStatus, string]> = [["ALL", "Semua"], ["PENDING", "Menunggu"], ["CONFIRMED", "Dikonfirmasi"], ["COMPLETED", "Selesai"], ["CANCELLED", "Dibatalkan"]];
@@ -146,6 +159,7 @@ function BookingsView({ onCreate }: { onCreate: () => void }) {
   </>;
 }
 
+// Tabel booking bersama untuk dashboard, daftar pemesanan, dan laporan.
 function BookingTable({ bookings, onUpdate, compact = false, readOnly = false, emptyTitle = "Belum ada data", emptyDescription = "Data akan muncul di sini.", emptyAction }: { bookings: BookingDTO[]; onUpdate: (id: string, input: { status?: BookingStatus; paymentStatus?: PaymentStatus }) => Promise<BookingDTO | null>; compact?: boolean; readOnly?: boolean; emptyTitle?: string; emptyDescription?: string; emptyAction?: () => void }) {
   if (!bookings.length) return <AdminEmpty title={emptyTitle} description={emptyDescription} action={emptyAction} actionLabel="Tambah booking" icon={Ticket} compact={compact} />;
   return <div className="admin-table-wrap"><table className="admin-booking-table"><thead><tr><th>Kode booking</th><th>Pelanggan</th><th>Wahana</th><th>Kunjungan</th><th>Tiket</th><th>Total</th><th>Status</th><th>Pembayaran</th></tr></thead><tbody>{bookings.map((booking) => <tr key={booking.id}>
@@ -160,6 +174,7 @@ function BookingTable({ bookings, onUpdate, compact = false, readOnly = false, e
   </tr>)}</tbody></table></div>;
 }
 
+// Katalog wahana yang bisa dilihat admin dan ditambah melalui dialog.
 function DestinationsView() {
   const { bookings, destinations, createDestination, error } = useWorkspace();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -189,11 +204,14 @@ function DestinationsView() {
   </>;
 }
 
+// Ikon kecil untuk kartu informasi katalog wahana.
 function CompassIcon() { return <MapPinned size={19} />; }
 
+// Form dialog untuk menambahkan wahana ke katalog akun admin.
 function DestinationDialog({ onClose, onCreate, error }: { onClose: () => void; onCreate: (input: DestinationInput) => Promise<boolean>; error: string }) {
   const [saving, setSaving] = useState(false);
 
+  // Ambil nilai form dan kirim sebagai data wahana baru.
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSaving(true);
@@ -228,6 +246,7 @@ function DestinationDialog({ onClose, onCreate, error }: { onClose: () => void; 
   </div>;
 }
 
+// Mengelompokkan booking berdasarkan email untuk membuat daftar pelanggan unik.
 function CustomersView() {
   const { bookings, filteredBookings, loading } = useWorkspace();
   const customers = useMemo(() => {
@@ -255,6 +274,7 @@ function CustomersView() {
   </>;
 }
 
+// Menghitung tren transaksi dan menyediakan unduhan laporan CSV.
 function ReportsView() {
   const { bookings, filteredBookings } = useWorkspace();
   const months = useMemo(() => Array.from({ length: 6 }, (_, index) => {
@@ -269,6 +289,7 @@ function ReportsView() {
   const paid = bookings.filter((booking) => booking.paymentStatus === "PAID");
   const conversion = bookings.length ? Math.round(paid.length / bookings.length * 100) : 0;
 
+  // Mengubah booking terfilter menjadi file CSV yang bisa dibuka di spreadsheet.
   function exportCsv() {
     const header = ["Kode booking", "Nama pelanggan", "Email", "Telepon", "Wahana", "Tanggal kunjungan", "Jumlah tiket", "Total", "Status booking", "Status pembayaran"];
     const rows = filteredBookings.map((booking) => [booking.code, booking.customerName, booking.customerEmail, booking.customerPhone ?? "", booking.destinationName, formatDate(booking.visitDate), booking.ticketCount, booking.totalAmount, statusLabels[booking.status], paymentLabels[booking.paymentStatus]]);
@@ -293,6 +314,7 @@ function ReportsView() {
   </>;
 }
 
+// Menampilkan preferensi admin serta ringkasan perlindungan data akun.
 function SettingsView() {
   const { user, bookings } = useWorkspace();
   return <>
@@ -304,6 +326,7 @@ function SettingsView() {
   </>;
 }
 
+// Halaman profil berisi identitas akun dan statistik booking.
 function ProfileView() {
   const { user, bookings } = useWorkspace();
   return <>
@@ -312,11 +335,13 @@ function ProfileView() {
   </>;
 }
 
+// Form bersama untuk menyimpan nama baru pada profil admin.
 function ProfileForm() {
   const { user, updateUser } = useWorkspace();
   const [name, setName] = useState(user.name);
   const [notice, setNotice] = useState("");
   const [saving, setSaving] = useState(false);
+  // Kirim nama ke API dan tampilkan hasil penyimpanannya.
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setSaving(true); setNotice("");
     const ok = await updateUser(name.trim()); setSaving(false);
@@ -325,16 +350,19 @@ function ProfileForm() {
   return <form className="admin-profile-form" onSubmit={submit}><label>Nama lengkap<input value={name} onChange={(event) => setName(event.target.value)} minLength={2} maxLength={80} required /></label><label>Email login<input value={user.email} disabled /></label>{notice && <span className={notice.includes("berhasil") ? "admin-success-copy" : "admin-form-error"} role="status">{notice}</span>}<button className="button button-coral admin-primary-button" type="submit" disabled={saving}>{saving ? "Menyimpan…" : "Simpan perubahan"}<ArrowRight size={15} /></button></form>;
 }
 
+// Tampilan kosong yang dipakai saat tabel atau daftar belum punya data.
 function AdminEmpty({ title, description, action, actionLabel, icon: Icon = Ticket, compact = false }: { title: string; description: string; action?: () => void; actionLabel?: string; icon?: typeof Ticket; compact?: boolean }) {
   return <div className={`admin-empty-state ${compact ? "is-compact" : ""}`}><span className="admin-empty-icon"><Icon size={22} /></span><strong>{title}</strong><p>{description}</p>{action && <button className="button button-light admin-empty-button" onClick={action}><Plus size={15} />{actionLabel ?? "Booking baru"}</button>}</div>;
 }
 
+// Form dialog untuk mencatat booking secara manual dari panel admin.
 function BookingDialog({ onClose, onCreate }: { onClose: () => void; onCreate: (input: BookingInput) => Promise<void> }) {
   const { error, destinations } = useWorkspace();
   const [saving, setSaving] = useState(false);
   const [destinationSlug, setDestinationSlug] = useState(destinations[0]?.slug ?? tourifyDestinations[0].slug);
   const [ticketCount, setTicketCount] = useState(1);
   const destination = destinations.find((item) => item.slug === destinationSlug) ?? destinations[0] ?? tourifyDestinations[0];
+  // Hitung total berdasarkan wahana dan jumlah tiket, lalu simpan booking.
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setSaving(true);
     const data = new FormData(event.currentTarget);

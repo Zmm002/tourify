@@ -10,6 +10,7 @@ export const runtime = "nodejs";
 
 type RouteContext = { params: Promise<{ taskId: string }> };
 
+// Mengubah tugas yang dimiliki akun aktif tanpa membuka data akun lain.
 export async function PATCH(request: Request, { params }: RouteContext) {
   if (!isSameOriginMutation(request)) return Response.json({ error: "Permintaan ditolak." }, { status: 403 });
   const session = await auth.api.getSession({ headers: await headers() });
@@ -41,6 +42,7 @@ export async function PATCH(request: Request, { params }: RouteContext) {
   return Response.json({ task: toTaskDTO(updated) }, { headers: { "Cache-Control": "private, no-store" } });
 }
 
+// Menghapus tugas tertentu hanya jika tugas itu milik pengguna yang masuk.
 export async function DELETE(request: Request, { params }: RouteContext) {
   if (!isSameOriginMutation(request)) return Response.json({ error: "Permintaan ditolak." }, { status: 403 });
   const session = await auth.api.getSession({ headers: await headers() });
